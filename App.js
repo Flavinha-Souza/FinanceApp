@@ -1,7 +1,7 @@
 import React from "react";
 import { SafeAreaView, StatusBar } from "react-native";
-import { TransactionProvider } from "./TransactionContext";
-import MainAppScreen from "./MainAppScreen";
+import { TransactionProvider } from "./src/context/TransactionContext";
+import MainAppScreen from "./src/screens/MainAppScreen";
 
 export default function App() {
   return (

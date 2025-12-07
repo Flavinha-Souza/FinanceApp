@@ -1,9 +1,42 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { useTransactions } from "./TransactionContext";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { useTransactions } from "../context/TransactionContext";
 
 export default function DashboardScreen() {
   const { transacoes, resumo, categorias, loading } = useTransactions();
+  const [filtro, setFiltro] = React.useState('mes'); // 'hoje', 'semana', 'mes', 'ano', 'tudo'
+
+  const filtrarTransacoes = () => {
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    return transacoes.filter(t => {
+      if (!t.data) return true;
+      const dataTransacao = new Date(t.data);
+      dataTransacao.setHours(0, 0, 0, 0);
+
+      switch(filtro) {
+        case 'hoje':
+          return dataTransacao.getTime() === hoje.getTime();
+        case 'semana':
+          const inicioSemana = new Date(hoje);
+          inicioSemana.setDate(hoje.getDate() - hoje.getDay());
+          return dataTransacao >= inicioSemana;
+        case 'mes':
+          return dataTransacao.getMonth() === hoje.getMonth() && 
+                 dataTransacao.getFullYear() === hoje.getFullYear();
+        case 'ano':
+          return dataTransacao.getFullYear() === hoje.getFullYear();
+        default:
+          return true;
+      }
+    });
+  };
+
+  const transacoesFiltradas = filtrarTransacoes();
+  const entradas = transacoesFiltradas.filter(t => t.valor > 0).reduce((sum, t) => sum + t.valor, 0);
+  const gastos = Math.abs(transacoesFiltradas.filter(t => t.valor < 0).reduce((sum, t) => sum + t.valor, 0));
+  const saldoTotal = entradas - gastos;
   
   if (loading) {
     return (
@@ -13,8 +46,8 @@ export default function DashboardScreen() {
     );
   }
   
-  const transacoesRecentes = transacoes.slice(-4); // Últimas 4 transações
-  const previsao = resumo.previsto >= 0 ? "+ R$ " + resumo.previsto.toFixed(2) : "R$ " + resumo.previsto.toFixed(2);
+  const transacoesRecentes = transacoesFiltradas.slice(-4);
+  const previsao = saldoTotal >= 0 ? "+ R$ " + saldoTotal.toFixed(2) : "R$ " + saldoTotal.toFixed(2);
 
   return (
     <ScrollView 
@@ -22,25 +55,39 @@ export default function DashboardScreen() {
       contentContainerStyle={styles.container} 
       showsVerticalScrollIndicator={false}
     >
+      {/* Filtros */}
+      <View style={styles.filtrosContainer}>
+        {['hoje', 'semana', 'mes', 'ano', 'tudo'].map((f) => (
+          <TouchableOpacity
+            key={f}
+            style={[styles.filtroBtn, filtro === f && styles.filtroBtnActive]}
+            onPress={() => setFiltro(f)}
+          >
+            <Text style={[styles.filtroText, filtro === f && styles.filtroTextActive]}>
+              {f === 'mes' ? 'Mês' : f.charAt(0).toUpperCase() + f.slice(1)}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
       
       <View style={styles.saldoCard}>
         <Text style={styles.saldoLabel}>Saldo Total</Text>
-        <Text style={styles.saldoValor}>R$ {resumo.saldoTotal.toFixed(2)}</Text>
+        <Text style={styles.saldoValor}>R$ {saldoTotal.toFixed(2)}</Text>
       </View>
 
    
       <View style={styles.resumoContainer}>
         <View style={styles.resumoCard}>
           <Text style={styles.resumoLabel}>Entradas</Text>
-          <Text style={[styles.resumoValor, { color: "#2ecc71" }]}>+ R$ {resumo.entradas.toFixed(2)}</Text>
+          <Text style={[styles.resumoValor, { color: "#2ecc71" }]}>+ R$ {entradas.toFixed(2)}</Text>
         </View>
         <View style={styles.resumoCard}>
           <Text style={styles.resumoLabel}>Gastos</Text>
-          <Text style={[styles.resumoValor, { color: "#e74c3c" }]}>- R$ {resumo.gastos.toFixed(2)}</Text>
+          <Text style={[styles.resumoValor, { color: "#e74c3c" }]}>- R$ {gastos.toFixed(2)}</Text>
         </View>
         <View style={styles.resumoCard}>
-          <Text style={styles.resumoLabel}>Previsão</Text>
-          <Text style={[styles.resumoValor, { color: resumo.previsto >= 0 ? "#2ecc71" : "#e74c3c" }]}>{previsao}</Text>
+          <Text style={styles.resumoLabel}>Saldo</Text>
+          <Text style={[styles.resumoValor, { color: saldoTotal >= 0 ? "#2ecc71" : "#e74c3c" }]}>{previsao}</Text>
         </View>
       </View>
 
@@ -88,6 +135,31 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   scrollContainer: { flex: 1, backgroundColor: "#fff" },
   container: { padding: 20, paddingBottom: 140 },
+  filtrosContainer: {
+    flexDirection: "row",
+    marginBottom: 20,
+    gap: 8,
+  },
+  filtroBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  filtroBtnActive: {
+    backgroundColor: "#007AFF",
+  },
+  filtroText: {
+    fontSize: 12,
+    color: "#666",
+    fontWeight: "500",
+  },
+  filtroTextActive: {
+    color: "#fff",
+    fontWeight: "600",
+  },
   saldoCard: { padding: 25, backgroundColor: "#f7f7f7", borderRadius: 16, marginBottom: 25, borderWidth: 1, borderColor: "#e5e5e5" },
   saldoLabel: { fontSize: 16, color: "#555" },
   saldoValor: { fontSize: 32, fontWeight: "700", marginTop: 5, color: "#000" },

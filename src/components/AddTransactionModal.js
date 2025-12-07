@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Modal,
   View,
@@ -10,27 +10,21 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function EditTransactionModal({ visible, onClose, onEdit, transacao }) {
+export default function AddTransactionModal({ visible, onClose, onAdd }) {
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
   const [categoria, setCategoria] = useState("");
   const [tipo, setTipo] = useState("despesa");
+  const hoje = new Date();
+  const dataInicial = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
+  const [data, setData] = useState(dataInicial); // DD/MM/AAAA
 
   const categorias = [
     "Alimentação", "Transporte", "Lazer", "Saúde", 
     "Compras", "Renda", "Outros"
   ];
 
-  useEffect(() => {
-    if (transacao) {
-      setNome(transacao.nome);
-      setValor(Math.abs(transacao.valor).toString());
-      setCategoria(transacao.categoria);
-      setTipo(transacao.valor > 0 ? "receita" : "despesa");
-    }
-  }, [transacao]);
-
-  const handleEdit = () => {
+  const handleAdd = () => {
     if (!nome || !valor || !categoria) {
       Alert.alert("Erro", "Preencha todos os campos");
       return;
@@ -42,14 +36,27 @@ export default function EditTransactionModal({ visible, onClose, onEdit, transac
       return;
     }
 
-    const transacaoEditada = {
-      ...transacao,
+    // Converter DD/MM/AAAA para AAAA-MM-DD para armazenamento
+    const [dia, mes, ano] = data.split('/');
+    const dataISO = `${ano}-${mes}-${dia}`;
+
+    const novaTransacao = {
+      id: Date.now(),
       nome,
       categoria,
       valor: tipo === "receita" ? valorNumerico : -valorNumerico,
+      data: dataISO,
     };
 
-    onEdit(transacaoEditada);
+    onAdd(novaTransacao);
+    
+    // Limpar campos
+    setNome("");
+    setValor("");
+    setCategoria("");
+    setTipo("despesa");
+    const novaData = new Date();
+    setData(`${String(novaData.getDate()).padStart(2, '0')}/${String(novaData.getMonth() + 1).padStart(2, '0')}/${novaData.getFullYear()}`);
     onClose();
   };
 
@@ -58,7 +65,7 @@ export default function EditTransactionModal({ visible, onClose, onEdit, transac
       <View style={styles.overlay}>
         <View style={styles.modal}>
           <View style={styles.header}>
-            <Text style={styles.title}>Editar Transação</Text>
+            <Text style={styles.title}>Nova Transação</Text>
             <TouchableOpacity onPress={onClose}>
               <Ionicons name="close" size={24} color="#000" />
             </TouchableOpacity>
@@ -98,6 +105,13 @@ export default function EditTransactionModal({ visible, onClose, onEdit, transac
             keyboardType="numeric"
           />
 
+          <TextInput
+            style={styles.input}
+            placeholder="Data (DD/MM/AAAA)"
+            value={data}
+            onChangeText={setData}
+          />
+
           <View style={styles.categoriaContainer}>
             <Text style={styles.categoriaLabel}>Categoria:</Text>
             <View style={styles.categoriaGrid}>
@@ -123,8 +137,8 @@ export default function EditTransactionModal({ visible, onClose, onEdit, transac
             </View>
           </View>
 
-          <TouchableOpacity style={styles.editBtn} onPress={handleEdit}>
-            <Text style={styles.editBtnText}>Salvar Alterações</Text>
+          <TouchableOpacity style={styles.addBtn} onPress={handleAdd}>
+            <Text style={styles.addBtnText}>Adicionar</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -218,13 +232,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
   },
-  editBtn: {
-    backgroundColor: "#28a745",
+  addBtn: {
+    backgroundColor: "#007AFF",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
   },
-  editBtnText: {
+  addBtnText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",

@@ -8,11 +8,12 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Dimensions,
+  Alert,
 } from "react-native";
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
-import { useTransactions } from "./TransactionContext";
-import AddTransactionModal from "./AddTransactionModal";
+import { useTransactions } from "../context/TransactionContext";
+import AddTransactionModal from "../components/AddTransactionModal";
 import DashboardScreen from "./DashboardScreen";
 import TransacoesScreen from "./TransacoesScreen";
 import CategoriasScreen from "./CategoriasScreen";
@@ -79,9 +80,9 @@ export default function MainAppScreen() {
   const handleAddTransaction = async (novaTransacao) => {
     const sucesso = await adicionarTransacao(novaTransacao);
     if (sucesso) {
-      console.log("Transação adicionada com sucesso!");
+      Alert.alert("Sucesso", "Transação adicionada!");
     } else {
-      console.log("Erro ao adicionar transação");
+      Alert.alert("Erro", "Não foi possível adicionar a transação");
     }
   };
 

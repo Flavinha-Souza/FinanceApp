@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { DataManager } from './DataManager';
+import { DataManager } from '../services/DataManager';
 
 const TransactionContext = createContext();
 

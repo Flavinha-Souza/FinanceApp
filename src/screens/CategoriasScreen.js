@@ -1,7 +1,7 @@
 // CategoriasScreen.js
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useTransactions } from "./TransactionContext";
+import { useTransactions } from "../context/TransactionContext";
 
 export default function CategoriasScreen() {
   const { categorias, loading } = useTransactions();

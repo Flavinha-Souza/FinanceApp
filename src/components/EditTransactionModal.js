@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -10,18 +10,37 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function AddTransactionModal({ visible, onClose, onAdd }) {
+export default function EditTransactionModal({ visible, onClose, onEdit, transacao }) {
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
   const [categoria, setCategoria] = useState("");
-  const [tipo, setTipo] = useState("despesa"); // "receita" ou "despesa"
+  const [tipo, setTipo] = useState("despesa");
+  const [data, setData] = useState(""); // DD/MM/AAAA
 
   const categorias = [
     "Alimentação", "Transporte", "Lazer", "Saúde", 
     "Compras", "Renda", "Outros"
   ];
 
-  const handleAdd = () => {
+  useEffect(() => {
+    if (transacao) {
+      setNome(transacao.nome);
+      setValor(Math.abs(transacao.valor).toString());
+      setCategoria(transacao.categoria);
+      setTipo(transacao.valor > 0 ? "receita" : "despesa");
+      
+      // Converter AAAA-MM-DD para DD/MM/AAAA
+      if (transacao.data) {
+        const [ano, mes, dia] = transacao.data.split('-');
+        setData(`${dia}/${mes}/${ano}`);
+      } else {
+        const hoje = new Date();
+        setData(`${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`);
+      }
+    }
+  }, [transacao]);
+
+  const handleEdit = () => {
     if (!nome || !valor || !categoria) {
       Alert.alert("Erro", "Preencha todos os campos");
       return;
@@ -33,20 +52,19 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
       return;
     }
 
-    const novaTransacao = {
-      id: Date.now(),
+    // Converter DD/MM/AAAA para AAAA-MM-DD para armazenamento
+    const [dia, mes, ano] = data.split('/');
+    const dataISO = `${ano}-${mes}-${dia}`;
+
+    const transacaoEditada = {
+      ...transacao,
       nome,
       categoria,
       valor: tipo === "receita" ? valorNumerico : -valorNumerico,
+      data: dataISO,
     };
 
-    onAdd(novaTransacao);
-    
-    // Limpar campos
-    setNome("");
-    setValor("");
-    setCategoria("");
-    setTipo("despesa");
+    onEdit(transacaoEditada);
     onClose();
   };
 
@@ -55,7 +73,7 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
       <View style={styles.overlay}>
         <View style={styles.modal}>
           <View style={styles.header}>
-            <Text style={styles.title}>Nova Transação</Text>
+            <Text style={styles.title}>Editar Transação</Text>
             <TouchableOpacity onPress={onClose}>
               <Ionicons name="close" size={24} color="#000" />
             </TouchableOpacity>
@@ -95,6 +113,13 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
             keyboardType="numeric"
           />
 
+          <TextInput
+            style={styles.input}
+            placeholder="Data (DD/MM/AAAA)"
+            value={data}
+            onChangeText={setData}
+          />
+
           <View style={styles.categoriaContainer}>
             <Text style={styles.categoriaLabel}>Categoria:</Text>
             <View style={styles.categoriaGrid}>
@@ -120,8 +145,8 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.addBtn} onPress={handleAdd}>
-            <Text style={styles.addBtnText}>Adicionar</Text>
+          <TouchableOpacity style={styles.editBtn} onPress={handleEdit}>
+            <Text style={styles.editBtnText}>Salvar Alterações</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -215,13 +240,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
   },
-  addBtn: {
-    backgroundColor: "#007AFF",
+  editBtn: {
+    backgroundColor: "#28a745",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
   },
-  addBtnText: {
+  editBtnText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
