@@ -1,12 +1,14 @@
 import React, { useContext, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Share } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ScrollView, Share, Switch } from "react-native";
 import { AuthContext } from "../context/AuthContext";
 import { useTransactions } from "../context/TransactionContext";
+import { useTheme } from "../context/ThemeContext";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 
 export default function ConfiguracoesScreen() {
   const { usuario, fazerLogout, alterarSenha } = useContext(AuthContext);
   const { transacoes } = useTransactions();
+  const { theme, isDark, toggleTheme } = useTheme();
   const [modalSenhaVisible, setModalSenhaVisible] = useState(false);
 
   const handleLogout = () => {
@@ -62,34 +64,45 @@ export default function ConfiguracoesScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Configurações</Text>
+    <ScrollView style={[styles.container, { backgroundColor: theme.backgroundSecondary }]}>
+      <Text style={[styles.title, { color: theme.text }]}>Configurações</Text>
       
       {usuario && (
-        <View style={styles.userCard}>
-          <View style={styles.avatarCircle}>
+        <View style={[styles.userCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <View style={[styles.avatarCircle, { backgroundColor: theme.primary }]}>
             <Text style={styles.avatarText}>{usuario.username[0].toUpperCase()}</Text>
           </View>
-          <Text style={styles.userName}>@{usuario.username}</Text>
+          <Text style={[styles.userName, { color: theme.text }]}>@{usuario.username}</Text>
         </View>
       )}
 
-      <Text style={styles.sectionTitle}>Conta</Text>
-      <TouchableOpacity style={styles.optionCard} onPress={handleChangePassword}>
-        <Text style={styles.optionText}>Alterar Senha</Text>
-        <Text style={styles.arrow}>›</Text>
+      <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Aparência</Text>
+      <View style={[styles.optionCard, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <Text style={[styles.optionText, { color: theme.text }]}>Modo Escuro</Text>
+        <Switch
+          value={isDark}
+          onValueChange={toggleTheme}
+          trackColor={{ false: '#767577', true: theme.primary }}
+          thumbColor="#fff"
+        />
+      </View>
+
+      <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Conta</Text>
+      <TouchableOpacity style={[styles.optionCard, { backgroundColor: theme.card, borderColor: theme.border }]} onPress={handleChangePassword}>
+        <Text style={[styles.optionText, { color: theme.text }]}>Alterar Senha</Text>
+        <Text style={[styles.arrow, { color: theme.textSecondary }]}>›</Text>
       </TouchableOpacity>
       
-      <Text style={styles.sectionTitle}>Dados</Text>
-      <TouchableOpacity style={styles.optionCard} onPress={handleExportData}>
-        <Text style={styles.optionText}>Exportar Transações</Text>
-        <Text style={styles.arrow}>›</Text>
+      <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Dados</Text>
+      <TouchableOpacity style={[styles.optionCard, { backgroundColor: theme.card, borderColor: theme.border }]} onPress={handleExportData}>
+        <Text style={[styles.optionText, { color: theme.text }]}>Exportar Transações</Text>
+        <Text style={[styles.arrow, { color: theme.textSecondary }]}>›</Text>
       </TouchableOpacity>
       
-      <Text style={styles.sectionTitle}>Sobre</Text>
-      <TouchableOpacity style={styles.optionCard} onPress={handleAbout}>
-        <Text style={styles.optionText}>Informações do App</Text>
-        <Text style={styles.arrow}>›</Text>
+      <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>Sobre</Text>
+      <TouchableOpacity style={[styles.optionCard, { backgroundColor: theme.card, borderColor: theme.border }]} onPress={handleAbout}>
+        <Text style={[styles.optionText, { color: theme.text }]}>Informações do App</Text>
+        <Text style={[styles.arrow, { color: theme.textSecondary }]}>›</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -97,7 +110,7 @@ export default function ConfiguracoesScreen() {
       </TouchableOpacity>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>FinanceApp v1.0.0</Text>
+        <Text style={[styles.footerText, { color: theme.textSecondary }]}>FinanceApp v1.0.0</Text>
       </View>
 
       <ChangePasswordModal

@@ -13,18 +13,20 @@ import {
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
 import { useTransactions } from "../context/TransactionContext";
+import { useTheme } from "../context/ThemeContext";
 import AddTransactionModal from "../components/AddTransactionModal";
 import DashboardScreen from "./DashboardScreen";
 import TransacoesScreen from "./TransacoesScreen";
 import CategoriasScreen from "./CategoriasScreen";
+import GraficosScreen from "./GraficosScreen";
 import ConfiguracoesScreen from "./ConfiguracoesScreen";
 
 
-function AjudaScreen() {
+function AjudaScreen({ theme }) {
   return (
-    <ScrollView contentContainerStyle={{ padding: 20 }}>
-      <Text style={styles.screenTitle}>Ajuda</Text>
-      <Text style={styles.text}>
+    <ScrollView contentContainerStyle={{ padding: 20, backgroundColor: theme.background }}>
+      <Text style={[styles.screenTitle, { color: theme.text }]}>Ajuda</Text>
+      <Text style={[styles.text, { color: theme.textSecondary }]}>
         Aqui você encontra informações e suporte sobre o uso do app.{"\n\n"}
         • Dúvidas frequentes{"\n"}
         • Como gerenciar suas finanças{"\n"}
@@ -34,11 +36,11 @@ function AjudaScreen() {
   );
 }
 
-function SobreScreen() {
+function SobreScreen({ theme }) {
   return (
-    <ScrollView contentContainerStyle={{ padding: 20 }}>
-      <Text style={styles.screenTitle}>Sobre</Text>
-      <Text style={styles.text}>
+    <ScrollView contentContainerStyle={{ padding: 20, backgroundColor: theme.background }}>
+      <Text style={[styles.screenTitle, { color: theme.text }]}>Sobre</Text>
+      <Text style={[styles.text, { color: theme.textSecondary }]}>
         App Financeiro v1.0{"\n"}
         Gerencie suas finanças pessoais{"\n"}
         Desenvolvido com React Native
@@ -51,6 +53,7 @@ const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default function MainAppScreen() {
   const { adicionarTransacao } = useTransactions();
+  const { theme, isDark } = useTheme();
   const [selectedTab, setSelectedTab] = useState("Dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -88,12 +91,13 @@ export default function MainAppScreen() {
 
  
   const sidebarItems = [
-    { name: "Dashboard", icon: <Ionicons name="home-outline" size={22} color="#000" /> },
-    { name: "Transações", icon: <Ionicons name="list-outline" size={22} color="#000" /> },
-    { name: "Categorias", icon: <Ionicons name="pricetag-outline" size={22} color="#000" /> },
-    { name: "Configurações", icon: <Ionicons name="settings-outline" size={22} color="#000" /> },
-    { name: "Ajuda", icon: <MaterialIcons name="help-outline" size={22} color="#000" /> },
-    { name: "Sobre", icon: <FontAwesome5 name="info-circle" size={22} color="#000" /> },
+    { name: "Dashboard", icon: <Ionicons name="home-outline" size={22} color={theme.text} /> },
+    { name: "Transações", icon: <Ionicons name="list-outline" size={22} color={theme.text} /> },
+    { name: "Gráficos", icon: <Ionicons name="bar-chart-outline" size={22} color={theme.text} /> },
+    { name: "Categorias", icon: <Ionicons name="pricetag-outline" size={22} color={theme.text} /> },
+    { name: "Configurações", icon: <Ionicons name="settings-outline" size={22} color={theme.text} /> },
+    { name: "Ajuda", icon: <MaterialIcons name="help-outline" size={22} color={theme.text} /> },
+    { name: "Sobre", icon: <FontAwesome5 name="info-circle" size={22} color={theme.text} /> },
   ];
 
 
@@ -101,10 +105,11 @@ export default function MainAppScreen() {
     const screens = {
       Dashboard: <DashboardScreen />,
       Transações: <TransacoesScreen />,
+      Gráficos: <GraficosScreen />,
       Categorias: <CategoriasScreen />,
       Configurações: <ConfiguracoesScreen />,
-      Ajuda: <AjudaScreen />,
-      Sobre: <SobreScreen />,
+      Ajuda: <AjudaScreen theme={theme} />,
+      Sobre: <SobreScreen theme={theme} />,
     };
 
     return screens[selectedTab] || <DashboardScreen />;
@@ -114,21 +119,21 @@ export default function MainAppScreen() {
   const bottomTabs = [
     { tab: "Dashboard", icon: "home-outline" },
     { tab: "Transações", icon: "list-outline" },
-    { tab: "Categorias", icon: "pricetag-outline" },
+    { tab: "Gráficos", icon: "bar-chart-outline" },
     { tab: "Configurações", icon: "settings-outline" },
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.backgroundSecondary }]}>
       
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
         <TouchableOpacity onPress={toggleSidebar} style={styles.menuBtn}>
-          <Ionicons name="menu" size={32} color="#000" />
+          <Ionicons name="menu" size={32} color={theme.text} />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>{selectedTab}</Text>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>{selectedTab}</Text>
 
-        <Ionicons name="wallet-outline" size={32} color="#000" />
+        <Ionicons name="wallet-outline" size={32} color={theme.text} />
       </View>
 
       
@@ -139,13 +144,13 @@ export default function MainAppScreen() {
       )}
 
    
-      <Animated.View style={[styles.sidebar, { left: sidebarX }]}>
-        <Text style={styles.logo}>Menu</Text>
+      <Animated.View style={[styles.sidebar, { left: sidebarX, backgroundColor: theme.card, borderRightColor: theme.border }]}>
+        <Text style={[styles.logo, { color: theme.text }]}>Menu</Text>
 
         {sidebarItems.map((item) => (
           <TouchableOpacity
             key={item.name}
-            style={styles.menuItem}
+            style={[styles.menuItem, { borderBottomColor: theme.border }]}
             onPress={() => {
               setSelectedTab(item.name);
               closeSidebar();
@@ -153,7 +158,7 @@ export default function MainAppScreen() {
           >
             <View style={styles.iconText}>
               {item.icon}
-              <Text style={styles.menuText}>{item.name}</Text>
+              <Text style={[styles.menuText, { color: theme.text }]}>{item.name}</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -163,7 +168,7 @@ export default function MainAppScreen() {
       <View style={{ flex: 1 }}>{renderScreen()}</View>
 
       
-      <View style={styles.bottomTabs}>
+      <View style={[styles.bottomTabs, { backgroundColor: theme.card, borderTopColor: theme.border }]}>
         {bottomTabs.map((item) => (
           <TouchableOpacity
             key={item.tab}
@@ -176,9 +181,9 @@ export default function MainAppScreen() {
             <Ionicons
               name={item.icon}
               size={28}
-              color={selectedTab === item.tab ? "#000" : "#888"}
+              color={selectedTab === item.tab ? theme.primary : theme.textSecondary}
             />
-            <Text style={[styles.tabText, selectedTab === item.tab && { color: "#000" }]}>
+            <Text style={[styles.tabText, { color: selectedTab === item.tab ? theme.text : theme.textSecondary }]}>
               {item.tab}
             </Text>
           </TouchableOpacity>
@@ -187,7 +192,7 @@ export default function MainAppScreen() {
 
       {/* Botão flutuante para adicionar transação */}
       <TouchableOpacity
-        style={styles.floatingButton}
+        style={[styles.floatingButton, { backgroundColor: theme.primary }]}
         onPress={() => setModalVisible(true)}
       >
         <Ionicons name="add" size={28} color="#fff" />
@@ -205,8 +210,7 @@ export default function MainAppScreen() {
 
 const styles = StyleSheet.create({
   container: { 
-    flex: 1, 
-    backgroundColor: "#F5F7FA" 
+    flex: 1
   },
 
   /* ---------------- HEADER ---------------- */
@@ -219,8 +223,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingTop: 30,
     borderBottomWidth: 1,
-    borderBottomColor: "#E1E5EB",
-    backgroundColor: "#FFFFFF",
   },
 
   menuBtn: { 
@@ -229,8 +231,7 @@ const styles = StyleSheet.create({
 
   headerTitle: { 
     fontSize: 22, 
-    fontWeight: "600", 
-    color: "#1C1C1E"
+    fontWeight: "600"
   },
 
   /* ---------------- SIDEBAR ---------------- */
@@ -240,25 +241,21 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 220,
-    backgroundColor: "#FFFFFF",
     paddingTop: 100,
     paddingHorizontal: 20,
     zIndex: 10,
     borderRightWidth: 1,
-    borderRightColor: "#E1E5EB",
   },
 
   logo: { 
     fontSize: 22, 
     fontWeight: "700", 
-    marginBottom: 30, 
-    color: "#1C1C1E"
+    marginBottom: 30
   },
 
   menuItem: { 
     paddingVertical: 15, 
-    borderBottomWidth: 1, 
-    borderBottomColor: "#E1E5EB" 
+    borderBottomWidth: 1
   },
 
   menuText: { 
@@ -292,8 +289,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     borderTopWidth: 1,
-    borderTopColor: "#E1E5EB",
-    backgroundColor: "#FFFFFF",
     paddingBottom: 40,
   },
 
@@ -313,13 +308,11 @@ const styles = StyleSheet.create({
   screenTitle: { 
     fontSize: 24, 
     fontWeight: "700", 
-    marginBottom: 15, 
-    color: "#1C1C1E" 
+    marginBottom: 15
   },
 
   text: { 
     fontSize: 16, 
-    color: "#6E6E73", 
     lineHeight: 22 
   },
 
@@ -332,7 +325,6 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "#007AFF",
     justifyContent: "center",
     alignItems: "center",
     elevation: 8,

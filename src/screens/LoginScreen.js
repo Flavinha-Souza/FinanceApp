@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Svg, Path, Circle, Rect } from 'react-native-svg';
+import { useTheme } from '../context/ThemeContext';
 
-function LogoIcon() {
+function LogoIcon({ color }) {
   return (
     <Svg width="80" height="80" viewBox="0 0 100 100">
-      <Circle cx="50" cy="50" r="45" fill="#1a73e8" />
+      <Circle cx="50" cy="50" r="45" fill={color} />
       <Path d="M35 45 L45 55 L65 35" stroke="#fff" strokeWidth="6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       <Rect x="30" y="60" width="40" height="4" fill="#fff" rx="2" />
     </Svg>
@@ -13,6 +14,7 @@ function LogoIcon() {
 }
 
 export default function LoginScreen({ onLogin, onNavigateToRegister }) {
+  const { theme } = useTheme();
   const [usuario, setUsuario] = useState('');
   const [senha, setSenha] = useState('');
 
@@ -26,21 +28,21 @@ export default function LoginScreen({ onLogin, onNavigateToRegister }) {
 
   return (
     <KeyboardAvoidingView 
-      style={styles.container} 
+      style={[styles.container, { backgroundColor: theme.backgroundSecondary }]} 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.content}>
         <View style={styles.header}>
-          <LogoIcon />
-          <Text style={styles.title}>FinanceApp</Text>
-          <Text style={styles.subtitle}>Gestão Financeira Inteligente</Text>
+          <LogoIcon color={theme.primary} />
+          <Text style={[styles.title, { color: theme.text }]}>FinanceApp</Text>
+          <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Gestão Financeira Inteligente</Text>
         </View>
 
         <View style={styles.form}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
             placeholder="Nome de usuário"
-            placeholderTextColor="#999"
+            placeholderTextColor={theme.placeholder}
             value={usuario}
             onChangeText={setUsuario}
             autoCapitalize="none"
@@ -48,22 +50,22 @@ export default function LoginScreen({ onLogin, onNavigateToRegister }) {
           />
 
           <TextInput
-            style={styles.input}
+            style={[styles.input, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
             placeholder="Senha"
-            placeholderTextColor="#999"
+            placeholderTextColor={theme.placeholder}
             value={senha}
             onChangeText={setSenha}
             secureTextEntry
             autoCapitalize="none"
           />
 
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <TouchableOpacity style={[styles.button, { backgroundColor: theme.primary }]} onPress={handleLogin}>
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={onNavigateToRegister}>
-            <Text style={styles.linkText}>
-              Não tem conta? <Text style={styles.linkBold}>Cadastre-se</Text>
+            <Text style={[styles.linkText, { color: theme.textSecondary }]}>
+              Não tem conta? <Text style={[styles.linkBold, { color: theme.primary }]}>Cadastre-se</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -75,7 +77,6 @@ export default function LoginScreen({ onLogin, onNavigateToRegister }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
   },
   content: {
     flex: 1,
@@ -89,31 +90,25 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#1a1a1a',
     marginTop: 20,
     marginBottom: 8,
     letterSpacing: -0.5,
   },
   subtitle: {
     fontSize: 15,
-    color: '#6c757d',
     fontWeight: '400',
   },
   form: {
     width: '100%',
   },
   input: {
-    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
     fontSize: 15,
     marginBottom: 14,
     borderWidth: 1.5,
-    borderColor: '#dee2e6',
-    color: '#212529',
   },
   button: {
-    backgroundColor: '#1a73e8',
     borderRadius: 10,
     padding: 16,
     alignItems: 'center',
@@ -129,10 +124,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 24,
     fontSize: 14,
-    color: '#6c757d',
   },
   linkBold: {
-    color: '#1a73e8',
     fontWeight: '600',
   },
 });

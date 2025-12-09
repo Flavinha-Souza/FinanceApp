@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MeuApp",
-    "slug": "MeuApp",
+    "name": "FinanceApp",
+    "slug": "financeapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,20 +10,28 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1a73e8"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.flaviasouza.financeapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1a73e8"
       },
+      "package": "com.flaviasouza.financeapp",
+      "versionCode": 1,
       "edgeToEdgeEnabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6a2fa490-9863-4e25-96b1-2e4ff5f4c163"
+      }
     }
   }
 }

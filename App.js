@@ -2,18 +2,20 @@ import React, { useContext, useState } from "react";
 import { SafeAreaView, StatusBar, ActivityIndicator, View, Alert } from "react-native";
 import { AuthProvider, AuthContext } from "./src/context/AuthContext";
 import { TransactionProvider } from "./src/context/TransactionContext";
+import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
 import MainAppScreen from "./src/screens/MainAppScreen";
 import LoginScreen from "./src/screens/LoginScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 
 function AppContent() {
   const { usuario, loading, fazerLogin, fazerCadastro } = useContext(AuthContext);
+  const { theme, isDark } = useTheme();
   const [tela, setTela] = useState('login');
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f8f9fa' }}>
-        <ActivityIndicator size="large" color="#1a73e8" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background }}>
+        <ActivityIndicator size="large" color={theme.primary} />
       </View>
     );
   }
@@ -50,8 +52,8 @@ function AppContent() {
 
   return (
     <TransactionProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-        <StatusBar barStyle="dark-content" />
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
+        <StatusBar barStyle={isDark ? "light-content" : "dark-content"} />
         <MainAppScreen />
       </SafeAreaView>
     </TransactionProvider>
@@ -60,9 +62,11 @@ function AppContent() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

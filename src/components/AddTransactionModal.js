@@ -9,8 +9,10 @@ import {
   Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../context/ThemeContext";
 
 export default function AddTransactionModal({ visible, onClose, onAdd }) {
+  const { theme } = useTheme();
   const [nome, setNome] = useState("");
   const [valor, setValor] = useState("");
   const [categoria, setCategoria] = useState("");
@@ -36,9 +38,9 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
       return;
     }
 
-    // Converter DD/MM/AAAA para AAAA-MM-DD para armazenamento
+    // Converter DD/MM/AAAA para AAAA-MM-DD (sem conversão de timezone)
     const [dia, mes, ano] = data.split('/');
-    const dataISO = `${ano}-${mes}-${dia}`;
+    const dataISO = `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
 
     const novaTransacao = {
       id: Date.now(),
@@ -63,71 +65,74 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
-        <View style={styles.modal}>
+        <View style={[styles.modal, { backgroundColor: theme.card }]}>
           <View style={styles.header}>
-            <Text style={styles.title}>Nova Transação</Text>
+            <Text style={[styles.title, { color: theme.text }]}>Nova Transação</Text>
             <TouchableOpacity onPress={onClose}>
-              <Ionicons name="close" size={24} color="#000" />
+              <Ionicons name="close" size={24} color={theme.text} />
             </TouchableOpacity>
           </View>
 
           <View style={styles.tipoContainer}>
             <TouchableOpacity
-              style={[styles.tipoBtn, tipo === "receita" && styles.tipoActive]}
+              style={[styles.tipoBtn, { backgroundColor: tipo === "receita" ? theme.primary : theme.inputBg }]}
               onPress={() => setTipo("receita")}
             >
-              <Text style={[styles.tipoText, tipo === "receita" && styles.tipoTextActive]}>
+              <Text style={[styles.tipoText, { color: tipo === "receita" ? "#fff" : theme.textSecondary }]}>
                 Entrada
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.tipoBtn, tipo === "despesa" && styles.tipoActive]}
+              style={[styles.tipoBtn, { backgroundColor: tipo === "despesa" ? theme.primary : theme.inputBg }]}
               onPress={() => setTipo("despesa")}
             >
-              <Text style={[styles.tipoText, tipo === "despesa" && styles.tipoTextActive]}>
+              <Text style={[styles.tipoText, { color: tipo === "despesa" ? "#fff" : theme.textSecondary }]}>
                 Despesa
               </Text>
             </TouchableOpacity>
           </View>
 
           <TextInput
-            style={styles.input}
+            style={[styles.input, { backgroundColor: theme.inputBg, borderColor: theme.border, color: theme.text }]}
             placeholder="Nome da transação"
+            placeholderTextColor={theme.placeholder}
             value={nome}
             onChangeText={setNome}
           />
 
           <TextInput
-            style={styles.input}
+            style={[styles.input, { backgroundColor: theme.inputBg, borderColor: theme.border, color: theme.text }]}
             placeholder="Valor (ex: 50.00)"
+            placeholderTextColor={theme.placeholder}
             value={valor}
             onChangeText={setValor}
             keyboardType="numeric"
           />
 
           <TextInput
-            style={styles.input}
+            style={[styles.input, { backgroundColor: theme.inputBg, borderColor: theme.border, color: theme.text }]}
             placeholder="Data (DD/MM/AAAA)"
+            placeholderTextColor={theme.placeholder}
             value={data}
             onChangeText={setData}
           />
 
           <View style={styles.categoriaContainer}>
-            <Text style={styles.categoriaLabel}>Categoria:</Text>
+            <Text style={[styles.categoriaLabel, { color: theme.text }]}>Categoria:</Text>
             <View style={styles.categoriaGrid}>
               {categorias.map((cat) => (
                 <TouchableOpacity
                   key={cat}
                   style={[
                     styles.categoriaBtn,
-                    categoria === cat && styles.categoriaBtnActive,
+                    { backgroundColor: categoria === cat ? theme.primary : theme.inputBg },
                   ]}
                   onPress={() => setCategoria(cat)}
                 >
                   <Text
                     style={[
                       styles.categoriaBtnText,
-                      categoria === cat && styles.categoriaBtnTextActive,
+                      { color: categoria === cat ? "#fff" : theme.textSecondary },
                     ]}
                   >
                     {cat}
@@ -137,7 +142,7 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.addBtn} onPress={handleAdd}>
+          <TouchableOpacity style={[styles.addBtn, { backgroundColor: theme.primary }]} onPress={handleAdd}>
             <Text style={styles.addBtnText}>Adicionar</Text>
           </TouchableOpacity>
         </View>
@@ -201,6 +206,7 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     marginBottom: 15,
+    color: "#000",
   },
   categoriaContainer: {
     marginBottom: 20,

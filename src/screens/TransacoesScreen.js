@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTransactions } from "../context/TransactionContext";
+import { useTheme } from "../context/ThemeContext";
 import EditTransactionModal from "../components/EditTransactionModal";
 
 export default function TransacoesScreen() {
   const { transacoes, loading, editarTransacao, deletarTransacao } = useTransactions();
+  const { theme } = useTheme();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [transacaoSelecionada, setTransacaoSelecionada] = useState(null);
   const [busca, setBusca] = useState("");
@@ -14,8 +16,8 @@ export default function TransacoesScreen() {
   
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <Text>Carregando...</Text>
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background }]}>
+        <Text style={{ color: theme.text }}>Carregando...</Text>
       </View>
     );
   }
@@ -28,7 +30,7 @@ export default function TransacoesScreen() {
     )
     .sort((a, b) => {
       if (ordenacao === "data") {
-        return new Date(b.data || 0) - new Date(a.data || 0);
+        return (b.data || '').localeCompare(a.data || '');
       } else {
         return Math.abs(b.valor) - Math.abs(a.valor);
       }
@@ -36,9 +38,9 @@ export default function TransacoesScreen() {
 
   if (transacoesFiltradas.length === 0 && busca === "") {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-        <Text style={styles.emptyText}>Nenhuma transação encontrada</Text>
-        <Text style={styles.emptySubText}>Use o botão + para adicionar sua primeira transação</Text>
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background }]}>
+        <Text style={[styles.emptyText, { color: theme.textSecondary }]}>Nenhuma transação encontrada</Text>
+        <Text style={[styles.emptySubText, { color: theme.textSecondary }]}>Use o botão + para adicionar sua primeira transação</Text>
       </View>
     );
   }
@@ -69,19 +71,20 @@ export default function TransacoesScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       {/* Busca */}
-      <View style={styles.buscaContainer}>
-        <Ionicons name="search" size={20} color="#666" style={styles.buscaIcon} />
+      <View style={[styles.buscaContainer, { backgroundColor: theme.inputBg }]}>
+        <Ionicons name="search" size={20} color={theme.textSecondary} style={styles.buscaIcon} />
         <TextInput
-          style={styles.buscaInput}
+          style={[styles.buscaInput, { color: theme.text }]}
           placeholder="Buscar transações..."
+          placeholderTextColor={theme.placeholder}
           value={busca}
           onChangeText={setBusca}
         />
         {busca !== "" && (
           <TouchableOpacity onPress={() => setBusca("")}>
-            <Ionicons name="close-circle" size={20} color="#666" />
+            <Ionicons name="close-circle" size={20} color={theme.textSecondary} />
           </TouchableOpacity>
         )}
       </View>
@@ -89,18 +92,18 @@ export default function TransacoesScreen() {
       {/* Ordenação */}
       <View style={styles.ordenacaoContainer}>
         <TouchableOpacity
-          style={[styles.ordenacaoBtn, ordenacao === "data" && styles.ordenacaoBtnActive]}
+          style={[styles.ordenacaoBtn, { backgroundColor: ordenacao === "data" ? theme.primary : theme.inputBg }]}
           onPress={() => setOrdenacao("data")}
         >
-          <Text style={[styles.ordenacaoText, ordenacao === "data" && styles.ordenacaoTextActive]}>
+          <Text style={[styles.ordenacaoText, { color: ordenacao === "data" ? '#fff' : theme.textSecondary }]}>
             Data
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.ordenacaoBtn, ordenacao === "valor" && styles.ordenacaoBtnActive]}
+          style={[styles.ordenacaoBtn, { backgroundColor: ordenacao === "valor" ? theme.primary : theme.inputBg }]}
           onPress={() => setOrdenacao("valor")}
         >
-          <Text style={[styles.ordenacaoText, ordenacao === "valor" && styles.ordenacaoTextActive]}>
+          <Text style={[styles.ordenacaoText, { color: ordenacao === "valor" ? '#fff' : theme.textSecondary }]}>
             Valor
           </Text>
         </TouchableOpacity>
@@ -108,32 +111,32 @@ export default function TransacoesScreen() {
 
       {transacoesFiltradas.length === 0 && busca !== "" ? (
         <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
-          <Text style={styles.emptyText}>Nenhuma transação encontrada</Text>
+          <Text style={[styles.emptyText, { color: theme.textSecondary }]}>Nenhuma transação encontrada</Text>
         </View>
       ) : (
         <FlatList
           data={transacoesFiltradas}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <View style={styles.item}>
+            <View style={[styles.item, { borderBottomColor: theme.border }]}>
               <View style={styles.itemLeft}>
-                <Text style={styles.nome}>{item.nome}</Text>
-                <Text style={styles.categoria}>{item.categoria}</Text>
-                {item.data && <Text style={styles.data}>{new Date(item.data).toLocaleDateString('pt-BR')}</Text>}
+                <Text style={[styles.nome, { color: theme.text }]}>{item.nome}</Text>
+                <Text style={[styles.categoria, { color: theme.textSecondary }]}>{item.categoria}</Text>
+                {item.data && <Text style={[styles.data, { color: theme.textSecondary }]}>{item.data.split('-').reverse().join('/')}</Text>}
               </View>
               <View style={styles.itemRight}>
-                <Text style={[styles.valor, { color: item.valor > 0 ? "#2ecc71" : "#e74c3c" }]}>
+                <Text style={[styles.valor, { color: item.valor > 0 ? theme.success : theme.danger }]}>
                   {item.valor > 0 ? "+ " : "- "}R$ {Math.abs(item.valor).toFixed(2)}
                 </Text>
                 <View style={styles.actions}>
                   <TouchableOpacity 
-                    style={styles.editBtn}
+                    style={[styles.editBtn, { backgroundColor: theme.primary }]}
                     onPress={() => handleEdit(item)}
                   >
                     <Text style={styles.editBtnText}>Editar</Text>
                   </TouchableOpacity>
                   <TouchableOpacity 
-                    style={styles.deleteBtn}
+                    style={[styles.deleteBtn, { backgroundColor: theme.danger }]}
                     onPress={() => handleDelete(item)}
                   >
                     <Text style={styles.deleteBtnText}>Excluir</Text>
@@ -156,11 +159,10 @@ export default function TransacoesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1 },
   buscaContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
     borderRadius: 8,
     paddingHorizontal: 12,
     margin: 15,
@@ -183,21 +185,12 @@ const styles = StyleSheet.create({
   ordenacaoBtn: {
     flex: 1,
     paddingVertical: 8,
-    backgroundColor: "#f5f5f5",
     borderRadius: 8,
     alignItems: "center",
   },
-  ordenacaoBtnActive: {
-    backgroundColor: "#007AFF",
-  },
   ordenacaoText: {
     fontSize: 14,
-    color: "#666",
     fontWeight: "500",
-  },
-  ordenacaoTextActive: {
-    color: "#fff",
-    fontWeight: "600",
   },
   item: {
     flexDirection: "row",
@@ -206,7 +199,6 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
   },
   itemLeft: {
     flex: 1,
@@ -219,7 +211,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   editBtn: {
-    backgroundColor: "#007AFF",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
@@ -231,7 +222,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   deleteBtn: {
-    backgroundColor: "#e74c3c",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
@@ -241,19 +231,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
   },
-  nome: { fontSize: 16, color: "#000", fontWeight: "500" },
-  categoria: { fontSize: 13, color: "#777", marginTop: 2 },
-  data: { fontSize: 12, color: "#999", marginTop: 2 },
+  nome: { fontSize: 16, fontWeight: "500" },
+  categoria: { fontSize: 13, marginTop: 2 },
+  data: { fontSize: 12, marginTop: 2 },
   valor: { fontSize: 16, fontWeight: "600" },
   emptyText: {
     fontSize: 18,
-    color: "#666",
     textAlign: "center",
     marginBottom: 10,
   },
   emptySubText: {
     fontSize: 14,
-    color: "#999",
     textAlign: "center",
   },
 });
