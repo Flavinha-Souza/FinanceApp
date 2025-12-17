@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Modal,
   View,
   Text,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   StyleSheet,
   Alert,
+  Animated,
 } from "react-native";
+import * as Haptics from 'expo-haptics';
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../context/ThemeContext";
 
@@ -20,6 +22,18 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
   const hoje = new Date();
   const dataInicial = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
   const [data, setData] = useState(dataInicial); // DD/MM/AAAA
+  const scaleAnim = useRef(new Animated.Value(0.8)).current;
+  
+  useEffect(() => {
+    if (visible) {
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      scaleAnim.setValue(0.8);
+    }
+  }, [visible]);
 
   const categorias = [
     "Alimentação", "Transporte", "Lazer", "Saúde", 
@@ -63,33 +77,65 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <Modal visible={visible} animationType="fade" transparent>
       <View style={styles.overlay}>
-        <View style={[styles.modal, { backgroundColor: theme.card }]}>
+        <Animated.View
+          style={[
+            styles.modal, 
+            { 
+              backgroundColor: theme.card,
+              transform: [{ scale: scaleAnim }]
+            }
+          ]}
+        >
           <View style={styles.header}>
             <Text style={[styles.title, { color: theme.text }]}>Nova Transação</Text>
-            <TouchableOpacity onPress={onClose}>
+            <Pressable 
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onClose();
+              }}
+              style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+            >
               <Ionicons name="close" size={24} color={theme.text} />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <View style={styles.tipoContainer}>
-            <TouchableOpacity
-              style={[styles.tipoBtn, { backgroundColor: tipo === "receita" ? theme.primary : theme.inputBg }]}
-              onPress={() => setTipo("receita")}
+            <Pressable
+              style={({ pressed }) => [
+                styles.tipoBtn, 
+                { 
+                  backgroundColor: tipo === "receita" ? theme.primary : theme.inputBg,
+                  transform: [{ scale: pressed ? 0.98 : 1 }]
+                }
+              ]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setTipo("receita");
+              }}
             >
               <Text style={[styles.tipoText, { color: tipo === "receita" ? "#fff" : theme.textSecondary }]}>
                 Entrada
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.tipoBtn, { backgroundColor: tipo === "despesa" ? theme.primary : theme.inputBg }]}
-              onPress={() => setTipo("despesa")}
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => [
+                styles.tipoBtn, 
+                { 
+                  backgroundColor: tipo === "despesa" ? theme.primary : theme.inputBg,
+                  transform: [{ scale: pressed ? 0.98 : 1 }]
+                }
+              ]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setTipo("despesa");
+              }}
             >
               <Text style={[styles.tipoText, { color: tipo === "despesa" ? "#fff" : theme.textSecondary }]}>
                 Despesa
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <TextInput
@@ -120,14 +166,20 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
           <View style={styles.categoriaContainer}>
             <Text style={[styles.categoriaLabel, { color: theme.text }]}>Categoria:</Text>
             <View style={styles.categoriaGrid}>
-              {categorias.map((cat) => (
-                <TouchableOpacity
+              {categorias.map((cat, index) => (
+                <Pressable
                   key={cat}
-                  style={[
+                  style={({ pressed }) => [
                     styles.categoriaBtn,
-                    { backgroundColor: categoria === cat ? theme.primary : theme.inputBg },
+                    { 
+                      backgroundColor: categoria === cat ? theme.primary : theme.inputBg,
+                      transform: [{ scale: pressed ? 0.95 : 1 }]
+                    },
                   ]}
-                  onPress={() => setCategoria(cat)}
+                  onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setCategoria(cat);
+                  }}
                 >
                   <Text
                     style={[
@@ -137,15 +189,27 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
                   >
                     {cat}
                   </Text>
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </View>
           </View>
 
-          <TouchableOpacity style={[styles.addBtn, { backgroundColor: theme.primary }]} onPress={handleAdd}>
+          <Pressable 
+            style={({ pressed }) => [
+              styles.addBtn, 
+              { 
+                backgroundColor: theme.primary,
+                transform: [{ scale: pressed ? 0.98 : 1 }]
+              }
+            ]} 
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              handleAdd();
+            }}
+          >
             <Text style={styles.addBtnText}>Adicionar</Text>
-          </TouchableOpacity>
-        </View>
+          </Pressable>
+        </Animated.View>
       </View>
     </Modal>
   );

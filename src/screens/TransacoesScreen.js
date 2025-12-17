@@ -1,18 +1,25 @@
 // TransacoesScreen.js
 import React, { useState } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, TextInput } from "react-native";
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, TextInput, RefreshControl } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTransactions } from "../context/TransactionContext";
 import { useTheme } from "../context/ThemeContext";
 import EditTransactionModal from "../components/EditTransactionModal";
 
 export default function TransacoesScreen() {
-  const { transacoes, loading, editarTransacao, deletarTransacao } = useTransactions();
+  const { transacoes, loading, editarTransacao, deletarTransacao, carregarTransacoes } = useTransactions();
   const { theme } = useTheme();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [transacaoSelecionada, setTransacaoSelecionada] = useState(null);
   const [busca, setBusca] = useState("");
   const [ordenacao, setOrdenacao] = useState("data");
+  const [refreshing, setRefreshing] = useState(false);
+  
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await carregarTransacoes();
+    setRefreshing(false);
+  };
   
   if (loading) {
     return (
@@ -117,6 +124,14 @@ export default function TransacoesScreen() {
         <FlatList
           data={transacoesFiltradas}
           keyExtractor={(item) => item.id.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[theme.primary]}
+              tintColor={theme.primary}
+            />
+          }
           renderItem={({ item }) => (
             <View style={[styles.item, { borderBottomColor: theme.border }]}>
               <View style={styles.itemLeft}>

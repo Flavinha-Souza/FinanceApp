@@ -87,6 +87,7 @@ export const TransactionProvider = ({ children }) => {
     editarTransacao,
     deletarTransacao,
     carregarDados,
+    carregarTransacoes: carregarDados,
   };
 
   return (

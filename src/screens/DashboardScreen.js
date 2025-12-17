@@ -1,5 +1,6 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, ScrollView, Pressable, Animated } from "react-native";
+import * as Haptics from 'expo-haptics';
 import { useTransactions } from "../context/TransactionContext";
 import { useTheme } from "../context/ThemeContext";
 
@@ -7,6 +8,15 @@ export default function DashboardScreen() {
   const { transacoes, resumo, categorias, loading } = useTransactions();
   const { theme } = useTheme();
   const [filtro, setFiltro] = React.useState('mes'); // 'hoje', 'semana', 'mes', 'ano', 'tudo'
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const filtrarTransacoes = () => {
     const hoje = new Date();
@@ -44,9 +54,26 @@ export default function DashboardScreen() {
   
   if (loading) {
     return (
-      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background }]}>
-        <Text style={{ color: theme.text }}>Carregando...</Text>
-      </View>
+      <ScrollView style={[styles.scrollContainer, { backgroundColor: theme.background }]}>
+        <View style={styles.container}>
+          {[...Array(3)].map((_, index) => (
+            <Animated.View
+              key={index}
+              style={[
+                styles.saldoCard, 
+                { 
+                  backgroundColor: theme.cardSecondary, 
+                  borderColor: theme.border,
+                  opacity: fadeAnim
+                }
+              ]}
+            >
+              <View style={[styles.skeleton, { backgroundColor: theme.border }]} />
+              <View style={[styles.skeletonLarge, { backgroundColor: theme.border }]} />
+            </Animated.View>
+          ))}
+        </View>
+      </ScrollView>
     );
   }
   
@@ -60,39 +87,73 @@ export default function DashboardScreen() {
       showsVerticalScrollIndicator={false}
     >
       {/* Filtros */}
-      <View style={styles.filtrosContainer}>
-        {['hoje', 'semana', 'mes', 'ano', 'tudo'].map((f) => (
-          <TouchableOpacity
-            key={f}
-            style={[styles.filtroBtn, { backgroundColor: filtro === f ? theme.primary : theme.inputBg }]}
-            onPress={() => setFiltro(f)}
-          >
-            <Text style={[styles.filtroText, { color: filtro === f ? '#fff' : theme.textSecondary }]}>
-              {f === 'mes' ? 'Mês' : f.charAt(0).toUpperCase() + f.slice(1)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <View style={styles.filtrosContainer}>
+          {['hoje', 'semana', 'mes', 'ano', 'tudo'].map((f, index) => (
+            <View key={f} style={{ flex: 1 }}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.filtroBtn, 
+                  { 
+                    backgroundColor: filtro === f ? theme.primary : theme.inputBg,
+                    transform: [{ scale: pressed ? 0.95 : 1 }],
+                    shadowColor: filtro === f ? theme.primary : 'transparent',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                    elevation: filtro === f ? 4 : 0,
+                  }
+                ]}
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  setFiltro(f);
+                }}
+              >
+                <Text style={[styles.filtroText, { color: filtro === f ? '#fff' : theme.textSecondary }]}>
+                  {f === 'mes' ? 'Mês' : f.charAt(0).toUpperCase() + f.slice(1)}
+                </Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
+      </Animated.View>
       
-      <View style={[styles.saldoCard, { backgroundColor: theme.cardSecondary, borderColor: theme.border }]}>
+      <Animated.View
+        style={[
+          styles.saldoCard, 
+          { 
+            backgroundColor: theme.cardSecondary, 
+            borderColor: theme.border,
+            opacity: fadeAnim
+          }
+        ]}
+      >
         <Text style={[styles.saldoLabel, { color: theme.textSecondary }]}>Saldo Total</Text>
         <Text style={[styles.saldoValor, { color: theme.text }]}>R$ {saldoTotal.toFixed(2)}</Text>
-      </View>
+      </Animated.View>
 
    
       <View style={styles.resumoContainer}>
-        <View style={[styles.resumoCard, { backgroundColor: theme.cardSecondary, borderColor: theme.border }]}>
-          <Text style={[styles.resumoLabel, { color: theme.textSecondary }]}>Entradas</Text>
-          <Text style={[styles.resumoValor, { color: theme.success }]}>+ R$ {entradas.toFixed(2)}</Text>
-        </View>
-        <View style={[styles.resumoCard, { backgroundColor: theme.cardSecondary, borderColor: theme.border }]}>
-          <Text style={[styles.resumoLabel, { color: theme.textSecondary }]}>Gastos</Text>
-          <Text style={[styles.resumoValor, { color: theme.danger }]}>- R$ {gastos.toFixed(2)}</Text>
-        </View>
-        <View style={[styles.resumoCard, { backgroundColor: theme.cardSecondary, borderColor: theme.border }]}>
-          <Text style={[styles.resumoLabel, { color: theme.textSecondary }]}>Saldo</Text>
-          <Text style={[styles.resumoValor, { color: saldoTotal >= 0 ? theme.success : theme.danger }]}>{previsao}</Text>
-        </View>
+        {[
+          { label: 'Entradas', valor: `+ R$ ${entradas.toFixed(2)}`, color: theme.success },
+          { label: 'Gastos', valor: `- R$ ${gastos.toFixed(2)}`, color: theme.danger },
+          { label: 'Saldo', valor: previsao, color: saldoTotal >= 0 ? theme.success : theme.danger }
+        ].map((item, index) => (
+          <Animated.View
+            key={item.label}
+            style={[
+              styles.resumoCard, 
+              { 
+                backgroundColor: theme.cardSecondary, 
+                borderColor: theme.border,
+                opacity: fadeAnim
+              }
+            ]}
+          >
+            <Text style={[styles.resumoLabel, { color: theme.textSecondary }]}>{item.label}</Text>
+            <Text style={[styles.resumoValor, { color: item.color }]}>{item.valor}</Text>
+          </Animated.View>
+        ))}
       </View>
 
       
@@ -114,23 +175,35 @@ export default function DashboardScreen() {
       {transacoesRecentes.length > 0 ? (
         <>
           <Text style={[styles.sectionTitle, { color: theme.text }]}>Transações Recentes</Text>
-          {transacoesRecentes.map((item) => (
-            <View key={item.id} style={[styles.transacaoItem, { borderBottomColor: theme.border }]}>
-              <View>
-                <Text style={[styles.transacaoNome, { color: theme.text }]}>{item.nome}</Text>
-                <Text style={[styles.transacaoCategoria, { color: theme.textSecondary }]}>{item.categoria}</Text>
-              </View>
-              <Text style={[styles.transacaoValor, { color: item.valor > 0 ? theme.success : theme.danger }]}>
-                {item.valor > 0 ? "+ " : "- "}R$ {Math.abs(item.valor).toFixed(2)}
-              </Text>
-            </View>
+          {transacoesRecentes.map((item, index) => (
+            <Animated.View key={item.id} style={{ opacity: fadeAnim }}>
+              <Pressable
+                style={({ pressed }) => [
+                  styles.transacaoItem, 
+                  { 
+                    borderBottomColor: theme.border,
+                    backgroundColor: pressed ? theme.backgroundSecondary : 'transparent',
+                    transform: [{ scale: pressed ? 0.98 : 1 }]
+                  }
+                ]}
+                onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+              >
+                <View>
+                  <Text style={[styles.transacaoNome, { color: theme.text }]}>{item.nome}</Text>
+                  <Text style={[styles.transacaoCategoria, { color: theme.textSecondary }]}>{item.categoria}</Text>
+                </View>
+                <Text style={[styles.transacaoValor, { color: item.valor > 0 ? theme.success : theme.danger }]}>
+                  {item.valor > 0 ? "+ " : "- "}R$ {Math.abs(item.valor).toFixed(2)}
+                </Text>
+              </Pressable>
+            </Animated.View>
           ))}
         </>
       ) : (
-        <View style={styles.emptyState}>
+        <Animated.View style={[styles.emptyState, { opacity: fadeAnim }]}>
           <Text style={[styles.emptyText, { color: theme.textSecondary }]}>Nenhuma transação ainda</Text>
           <Text style={[styles.emptySubText, { color: theme.textSecondary }]}>Use o botão + para adicionar sua primeira transação</Text>
-        </View>
+        </Animated.View>
       )}
     </ScrollView>
   );
@@ -184,5 +257,18 @@ const styles = StyleSheet.create({
   emptySubText: {
     fontSize: 14,
     textAlign: "center",
+  },
+  skeleton: {
+    width: '60%',
+    height: 16,
+    borderRadius: 4,
+    opacity: 0.3,
+    marginBottom: 10,
+  },
+  skeletonLarge: {
+    width: '80%',
+    height: 24,
+    borderRadius: 4,
+    opacity: 0.3,
   },
 });

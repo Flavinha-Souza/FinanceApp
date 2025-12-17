@@ -53,7 +53,7 @@ export default function LoginScreen({ onLogin, onNavigateToRegister }) {
             style={[styles.input, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
             placeholder="Senha"
             placeholderTextColor={theme.placeholder}
-            value={senha}
+            value={senha}    
             onChangeText={setSenha}
             secureTextEntry
             autoCapitalize="none"

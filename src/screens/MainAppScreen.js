@@ -3,13 +3,14 @@ import {
   StyleSheet,
   View,
   Text,
-  TouchableOpacity,
+  Pressable,
   Animated,
   ScrollView,
   TouchableWithoutFeedback,
   Dimensions,
   Alert,
 } from "react-native";
+import * as Haptics from 'expo-haptics';
 import { Ionicons, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
 import { useTransactions } from "../context/TransactionContext";
@@ -61,20 +62,23 @@ export default function MainAppScreen() {
 
   
   const toggleSidebar = () => {
-    Animated.timing(sidebarX, {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Animated.spring(sidebarX, {
       toValue: sidebarOpen ? -220 : 0,
-      duration: 250,
       useNativeDriver: false,
+      tension: 100,
+      friction: 8,
     }).start();
     setSidebarOpen(!sidebarOpen);
   };
 
   const closeSidebar = () => {
     if (sidebarOpen) {
-      Animated.timing(sidebarX, {
+      Animated.spring(sidebarX, {
         toValue: -220,
-        duration: 250,
         useNativeDriver: false,
+        tension: 100,
+        friction: 8,
       }).start();
       setSidebarOpen(false);
     }
@@ -127,9 +131,15 @@ export default function MainAppScreen() {
     <View style={[styles.container, { backgroundColor: theme.backgroundSecondary }]}>
       
       <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.border }]}>
-        <TouchableOpacity onPress={toggleSidebar} style={styles.menuBtn}>
+        <Pressable 
+          onPress={toggleSidebar} 
+          style={({ pressed }) => [
+            styles.menuBtn,
+            { opacity: pressed ? 0.7 : 1, transform: [{ scale: pressed ? 0.95 : 1 }] }
+          ]}
+        >
           <Ionicons name="menu" size={32} color={theme.text} />
-        </TouchableOpacity>
+        </Pressable>
 
         <Text style={[styles.headerTitle, { color: theme.text }]}>{selectedTab}</Text>
 
@@ -147,11 +157,19 @@ export default function MainAppScreen() {
       <Animated.View style={[styles.sidebar, { left: sidebarX, backgroundColor: theme.card, borderRightColor: theme.border }]}>
         <Text style={[styles.logo, { color: theme.text }]}>Menu</Text>
 
-        {sidebarItems.map((item) => (
-          <TouchableOpacity
+        {sidebarItems.map((item, index) => (
+          <Pressable
             key={item.name}
-            style={[styles.menuItem, { borderBottomColor: theme.border }]}
+            style={({ pressed }) => [
+              styles.menuItem, 
+              { 
+                borderBottomColor: theme.border,
+                backgroundColor: pressed ? theme.backgroundSecondary : 'transparent',
+                transform: [{ scale: pressed ? 0.98 : 1 }]
+              }
+            ]}
             onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
               setSelectedTab(item.name);
               closeSidebar();
             }}
@@ -160,7 +178,7 @@ export default function MainAppScreen() {
               {item.icon}
               <Text style={[styles.menuText, { color: theme.text }]}>{item.name}</Text>
             </View>
-          </TouchableOpacity>
+          </Pressable>
         ))}
       </Animated.View>
 
@@ -169,34 +187,66 @@ export default function MainAppScreen() {
 
       
       <View style={[styles.bottomTabs, { backgroundColor: theme.card, borderTopColor: theme.border }]}>
-        {bottomTabs.map((item) => (
-          <TouchableOpacity
-            key={item.tab}
-            style={styles.tabButton}
-            onPress={() => {
-              setSelectedTab(item.tab);
-              closeSidebar();
-            }}
-          >
-            <Ionicons
-              name={item.icon}
-              size={28}
-              color={selectedTab === item.tab ? theme.primary : theme.textSecondary}
-            />
-            <Text style={[styles.tabText, { color: selectedTab === item.tab ? theme.text : theme.textSecondary }]}>
-              {item.tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {bottomTabs.map((item) => {
+          const isActive = selectedTab === item.tab;
+          return (
+            <Pressable
+              key={item.tab}
+              style={({ pressed }) => [
+                styles.tabButton,
+                { 
+                  opacity: pressed ? 0.7 : 1,
+                  transform: [{ scale: pressed ? 0.95 : 1 }]
+                }
+              ]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                setSelectedTab(item.tab);
+                closeSidebar();
+              }}
+            >
+              <View style={[
+                styles.tabIconContainer,
+                { 
+                  backgroundColor: isActive ? theme.primary + '20' : 'transparent',
+                }
+              ]}>
+                <Ionicons
+                  name={isActive ? item.icon.replace('-outline', '') : item.icon}
+                  size={24}
+                  color={isActive ? theme.primary : theme.textSecondary}
+                />
+              </View>
+              <Text style={[
+                styles.tabText, 
+                { 
+                  color: isActive ? theme.primary : theme.textSecondary,
+                  fontWeight: isActive ? '600' : '400'
+                }
+              ]}>
+                {item.tab}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
       {/* Botão flutuante para adicionar transação */}
-      <TouchableOpacity
-        style={[styles.floatingButton, { backgroundColor: theme.primary }]}
-        onPress={() => setModalVisible(true)}
+      <Pressable
+        style={({ pressed }) => [
+          styles.floatingButton, 
+          { 
+            backgroundColor: theme.primary,
+            transform: [{ scale: pressed ? 0.9 : 1 }]
+          }
+        ]}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          setModalVisible(true);
+        }}
       >
         <Ionicons name="add" size={28} color="#fff" />
-      </TouchableOpacity>
+      </Pressable>
 
       {/* Modal para adicionar transação */}
       <AddTransactionModal
@@ -294,13 +344,23 @@ const styles = StyleSheet.create({
 
   tabButton: { 
     justifyContent: "center", 
-    alignItems: "center" 
+    alignItems: "center",
+    flex: 1,
+    paddingVertical: 8,
+  },
+
+  tabIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 4,
   },
 
   tabText: { 
-    fontSize: 12,
-    marginTop: 3,
-    fontWeight: "500"
+    fontSize: 11,
+    textAlign: "center",
   },
 
   /* ---------------- SCREENS ---------------- */

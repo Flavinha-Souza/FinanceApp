@@ -1,5 +1,6 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { SafeAreaView, StatusBar, ActivityIndicator, View, Alert } from "react-native";
+import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider, AuthContext } from "./src/context/AuthContext";
 import { TransactionProvider } from "./src/context/TransactionContext";
 import { ThemeProvider, useTheme } from "./src/context/ThemeContext";
@@ -7,17 +8,21 @@ import MainAppScreen from "./src/screens/MainAppScreen";
 import LoginScreen from "./src/screens/LoginScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 
+SplashScreen.preventAutoHideAsync();
+
 function AppContent() {
   const { usuario, loading, fazerLogin, fazerCadastro } = useContext(AuthContext);
   const { theme, isDark } = useTheme();
   const [tela, setTela] = useState('login');
+  
+  useEffect(() => {
+    if (!loading) {
+      SplashScreen.hideAsync();
+    }
+  }, [loading]);
 
   if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.background }}>
-        <ActivityIndicator size="large" color={theme.primary} />
-      </View>
-    );
+    return null; // Splash screen será mostrada
   }
 
   if (!usuario) {
