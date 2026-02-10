@@ -16,11 +16,11 @@ Aplicativo mobile de gestão financeira desenvolvido com React Native e Expo. Pe
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="./screenshots/Login.jpeg" width="200" />
-  <img src="./screenshots/Dashboard.jpeg" width="200" />
-  <img src="./screenshots/Transações.jpeg" width="200" />
-  <img src="./screenshots/Gráficos.jpeg" width="200" />
-  <img src="./screenshots/Configurações.jpeg" width="200" />
+  <img src="./screenshots/Login.jpeg" width="160" />
+  <img src="./screenshots/Dashboard.jpeg" width="160" />
+  <img src="./screenshots/Transações.jpeg" width="160" />
+  <img src="./screenshots/Gráficos.jpeg" width="160" />
+  <img src="./screenshots/Configurações.jpeg" width="160" />
 </p>
 
 ## 🚀 Tecnologias
