@@ -10,11 +10,9 @@ export const DataManager = {
       if (dados) {
         return JSON.parse(dados);
       } else {
-        // Começar com lista vazia
         return [];
       }
     } catch (error) {
-      console.error('Erro ao carregar transações:', error);
       return [];
     }
   },
@@ -25,7 +23,6 @@ export const DataManager = {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(transacoes));
       return true;
     } catch (error) {
-      console.error('Erro ao salvar transações:', error);
       return false;
     }
   },
@@ -38,7 +35,6 @@ export const DataManager = {
       await this.salvarTransacoes(transacoesAtualizadas);
       return transacoesAtualizadas;
     } catch (error) {
-      console.error('Erro ao adicionar transação:', error);
       return null;
     }
   },
@@ -53,7 +49,6 @@ export const DataManager = {
       await this.salvarTransacoes(transacoesAtualizadas);
       return transacoesAtualizadas;
     } catch (error) {
-      console.error('Erro ao editar transação:', error);
       return null;
     }
   },
@@ -66,7 +61,6 @@ export const DataManager = {
       await this.salvarTransacoes(transacoesAtualizadas);
       return transacoesAtualizadas;
     } catch (error) {
-      console.error('Erro ao deletar transação:', error);
       return null;
     }
   },

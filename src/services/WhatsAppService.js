@@ -48,10 +48,8 @@ export class WhatsAppService {
       
       let url;
       if (numeroWhatsApp) {
-        // Enviar para número específico
         url = `whatsapp://send?phone=${numeroWhatsApp}&text=${mensagem}`;
       } else {
-        // Abrir WhatsApp para escolher contato
         url = `whatsapp://send?text=${mensagem}`;
       }
       
@@ -63,7 +61,6 @@ export class WhatsAppService {
         throw new Error('WhatsApp não está instalado');
       }
     } catch (error) {
-      console.error('Erro ao enviar relatório:', error);
       return false;
     }
   }
@@ -113,7 +110,6 @@ export class WhatsAppService {
       await Linking.openURL(url);
       return true;
     } catch (error) {
-      console.error('Erro ao enviar backup:', error);
       return false;
     }
   }

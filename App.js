@@ -22,7 +22,7 @@ function AppContent() {
   }, [loading]);
 
   if (loading) {
-    return null; // Splash screen será mostrada
+    return null;
   }
 
   if (!usuario) {

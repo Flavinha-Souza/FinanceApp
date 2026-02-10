@@ -24,6 +24,10 @@ export default function RegisterScreen({ onRegister, onNavigateToLogin }) {
       Alert.alert('Erro', 'Preencha todos os campos');
       return;
     }
+    if (usuario.length < 3) {
+      Alert.alert('Erro', 'Usuário deve ter no mínimo 3 caracteres');
+      return;
+    }
     if (senha !== confirmarSenha) {
       Alert.alert('Erro', 'As senhas não coincidem');
       return;

@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { hashPassword, encrypt, decrypt } from '../utils/crypto';
 
 const USERS_KEY = '@MeuApp:users';
 const CURRENT_USER_KEY = '@MeuApp:currentUser';
@@ -12,7 +13,8 @@ export async function register(username, senha) {
       return null;
     }
 
-    const newUser = { id: Date.now().toString(), username, senha };
+    const senhaHash = hashPassword(senha);
+    const newUser = { id: Date.now().toString(), username, senha: senhaHash };
     users.push(newUser);
 
     await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users));
@@ -20,7 +22,6 @@ export async function register(username, senha) {
 
     return { id: newUser.id, username: newUser.username };
   } catch (error) {
-    console.error('Erro ao cadastrar:', error);
     return null;
   }
 }
@@ -30,7 +31,8 @@ export async function login(username, senha) {
     const usersData = await AsyncStorage.getItem(USERS_KEY);
     const users = usersData ? JSON.parse(usersData) : [];
 
-    const user = users.find(u => u.username === username && u.senha === senha);
+    const senhaHash = hashPassword(senha);
+    const user = users.find(u => u.username === username && u.senha === senhaHash);
     if (!user) {
       return null;
     }
@@ -38,7 +40,6 @@ export async function login(username, senha) {
     await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify({ id: user.id, username: user.username }));
     return { id: user.id, username: user.username };
   } catch (error) {
-    console.error('Erro ao fazer login:', error);
     return null;
   }
 }
@@ -47,7 +48,7 @@ export async function logout() {
   try {
     await AsyncStorage.removeItem(CURRENT_USER_KEY);
   } catch (error) {
-    console.error('Erro ao fazer logout:', error);
+    // Silencioso
   }
 }
 
@@ -56,7 +57,6 @@ export async function checkAuth() {
     const userData = await AsyncStorage.getItem(CURRENT_USER_KEY);
     return userData ? JSON.parse(userData) : null;
   } catch (error) {
-    console.error('Erro ao verificar autenticação:', error);
     return null;
   }
 }
@@ -66,16 +66,16 @@ export async function changePassword(userId, senhaAtual, novaSenha) {
     const usersData = await AsyncStorage.getItem(USERS_KEY);
     const users = usersData ? JSON.parse(usersData) : [];
 
-    const userIndex = users.findIndex(u => u.id === userId && u.senha === senhaAtual);
+    const senhaAtualHash = hashPassword(senhaAtual);
+    const userIndex = users.findIndex(u => u.id === userId && u.senha === senhaAtualHash);
     if (userIndex === -1) {
       return false;
     }
 
-    users[userIndex].senha = novaSenha;
+    users[userIndex].senha = hashPassword(novaSenha);
     await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users));
     return true;
   } catch (error) {
-    console.error('Erro ao alterar senha:', error);
     return false;
   }
 }

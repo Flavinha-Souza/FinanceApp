@@ -23,6 +23,14 @@ export default function LoginScreen({ onLogin, onNavigateToRegister }) {
       Alert.alert('Erro', 'Preencha todos os campos');
       return;
     }
+    if (usuario.length < 3) {
+      Alert.alert('Erro', 'Usuário deve ter no mínimo 3 caracteres');
+      return;
+    }
+    if (senha.length < 4) {
+      Alert.alert('Erro', 'Senha deve ter no mínimo 4 caracteres');
+      return;
+    }
     onLogin(usuario.trim(), senha);
   };
 
