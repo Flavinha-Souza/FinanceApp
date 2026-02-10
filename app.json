@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "💰 MeuApp Financeiro",
-    "slug": "meuapp-financeiro",
+    "name": "FinanceApp",
+    "slug": "financeapp",
     "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -9,8 +9,8 @@
     "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#007AFF"
+      "resizeMode": "center",
+      "backgroundColor": "#FFFFFF"
     },
     "ios": {
       "supportsTablet": true,

@@ -30,12 +30,8 @@ function AppContent() {
       return (
         <RegisterScreen
           onRegister={async (username, senha) => {
-            const sucesso = await fazerCadastro(username, senha);
-            if (sucesso) {
-              Alert.alert('Sucesso', 'Conta criada com sucesso!');
-            } else {
-              Alert.alert('Erro', 'Nome de usuário já existe');
-            }
+            await fazerCadastro(username, senha);
+            Alert.alert('Sucesso', 'Conta criada com sucesso!');
           }}
           onNavigateToLogin={() => setTela('login')}
         />

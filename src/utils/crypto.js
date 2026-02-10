@@ -4,7 +4,7 @@
  * Criado apenas para fins de demonstração em projetos pessoais.
  */
 
-export function pseudoHashPassword(password) {
+export function hashPassword(password) {
   let hash = 0;
   const combined = password + '_demo_salt';
   

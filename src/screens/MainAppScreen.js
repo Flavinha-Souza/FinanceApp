@@ -63,22 +63,20 @@ export default function MainAppScreen() {
   
   const toggleSidebar = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    Animated.spring(sidebarX, {
+    Animated.timing(sidebarX, {
       toValue: sidebarOpen ? -220 : 0,
+      duration: 250,
       useNativeDriver: false,
-      tension: 100,
-      friction: 8,
     }).start();
     setSidebarOpen(!sidebarOpen);
   };
 
   const closeSidebar = () => {
     if (sidebarOpen) {
-      Animated.spring(sidebarX, {
+      Animated.timing(sidebarX, {
         toValue: -220,
+        duration: 200,
         useNativeDriver: false,
-        tension: 100,
-        friction: 8,
       }).start();
       setSidebarOpen(false);
     }
@@ -126,6 +124,8 @@ export default function MainAppScreen() {
     { tab: "Gráficos", icon: "bar-chart-outline" },
     { tab: "Configurações", icon: "settings-outline" },
   ];
+
+  const tabScale = useRef(bottomTabs.map(() => new Animated.Value(1))).current;
 
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundSecondary }]}>
@@ -187,28 +187,39 @@ export default function MainAppScreen() {
 
       
       <View style={[styles.bottomTabs, { backgroundColor: theme.card, borderTopColor: theme.border }]}>
-        {bottomTabs.map((item) => {
+        {bottomTabs.map((item, index) => {
           const isActive = selectedTab === item.tab;
           return (
             <Pressable
               key={item.tab}
-              style={({ pressed }) => [
-                styles.tabButton,
-                { 
-                  opacity: pressed ? 0.7 : 1,
-                  transform: [{ scale: pressed ? 0.95 : 1 }]
-                }
-              ]}
+              onPressIn={() => {
+                Animated.spring(tabScale[index], {
+                  toValue: 0.85,
+                  useNativeDriver: true,
+                  tension: 300,
+                  friction: 10,
+                }).start();
+              }}
+              onPressOut={() => {
+                Animated.spring(tabScale[index], {
+                  toValue: 1,
+                  useNativeDriver: true,
+                  tension: 300,
+                  friction: 10,
+                }).start();
+              }}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setSelectedTab(item.tab);
                 closeSidebar();
               }}
+              style={styles.tabButton}
             >
-              <View style={[
+              <Animated.View style={[
                 styles.tabIconContainer,
                 { 
                   backgroundColor: isActive ? theme.primary + '20' : 'transparent',
+                  transform: [{ scale: tabScale[index] }]
                 }
               ]}>
                 <Ionicons
@@ -216,7 +227,7 @@ export default function MainAppScreen() {
                   size={24}
                   color={isActive ? theme.primary : theme.textSecondary}
                 />
-              </View>
+              </Animated.View>
               <Text style={[
                 styles.tabText, 
                 { 
@@ -340,6 +351,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderTopWidth: 1,
     paddingBottom: 40,
+    overflow: "hidden",
   },
 
   tabButton: { 
@@ -347,6 +359,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flex: 1,
     paddingVertical: 8,
+    paddingTop: 12,
   },
 
   tabIconContainer: {
@@ -355,7 +368,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 2,
   },
 
   tabText: { 

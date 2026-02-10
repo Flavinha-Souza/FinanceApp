@@ -9,8 +9,15 @@ export async function register(username, senha) {
     const usersData = await AsyncStorage.getItem(USERS_KEY);
     const users = usersData ? JSON.parse(usersData) : [];
 
-    if (users.find(u => u.username === username)) {
-      return null;
+    const existingUser = users.find(u => u.username === username);
+    if (existingUser) {
+      // Sobrescreve o usuário antigo
+      const userIndex = users.findIndex(u => u.username === username);
+      const senhaHash = hashPassword(senha);
+      users[userIndex] = { id: existingUser.id, username, senha: senhaHash };
+      await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users));
+      await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify({ id: existingUser.id, username }));
+      return { id: existingUser.id, username };
     }
 
     const senhaHash = hashPassword(senha);
@@ -32,7 +39,21 @@ export async function login(username, senha) {
     const users = usersData ? JSON.parse(usersData) : [];
 
     const senhaHash = hashPassword(senha);
-    const user = users.find(u => u.username === username && u.senha === senhaHash);
+    
+    // Tenta com hash primeiro
+    let user = users.find(u => u.username === username && u.senha === senhaHash);
+    
+    // Se não encontrar, tenta com senha antiga (sem hash) e migra
+    if (!user) {
+      user = users.find(u => u.username === username && u.senha === senha);
+      if (user) {
+        // Migra para hash
+        const userIndex = users.findIndex(u => u.username === username);
+        users[userIndex].senha = senhaHash;
+        await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users));
+      }
+    }
+    
     if (!user) {
       return null;
     }
