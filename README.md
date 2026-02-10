@@ -1,17 +1,30 @@
 # FinanceApp - Gestão Financeira Pessoal
 
-Aplicativo mobile de gestão financeira desenvolvido com React Native e Expo. Permite controlar receitas, despesas e visualizar relatórios financeiros.
+Aplicativo mobile de gestão financeira desenvolvido com React Native e Expo. Permite o controle manual de receitas e despesas, além da visualização de relatórios financeiros.
 
 ## 📱 Funcionalidades
 
-- ✅ Autenticação local de usuários (login/registro)
-- ✅ Adicionar, editar e excluir transações
-- ✅ Categorização de gastos
-- ✅ Dashboard com resumo financeiro
-- ✅ Gráficos de receitas e despesas
-- ✅ Tema claro/escuro
-- ✅ Alteração de senha
-- ✅ Dados armazenados localmente
+✅ Autenticação local de usuários (login/registro)
+
+✅ Adicionar, editar e excluir transações manualmente
+
+✅ Categorização de gastos e receitas
+
+✅ Dashboard com resumo financeiro
+
+✅ Gráficos de receitas e despesas
+
+✅ Visualização de gastos por categoria
+
+✅ Tema claro/escuro
+
+✅ Alteração de senha e preferências do usuário
+
+✅ Funciona offline (dados armazenados localmente)
+
+✅ Tela de ajuda e informações sobre o app
+
+
 
 ## 📸 Screenshots
 
@@ -25,38 +38,48 @@ Aplicativo mobile de gestão financeira desenvolvido com React Native e Expo. Pe
 
 ## 🚀 Tecnologias
 
-- **React Native** - Framework mobile
-- **Expo** - Plataforma de desenvolvimento
-- **AsyncStorage** - Armazenamento local
-- **Context API** - Gerenciamento de estado
+- **React Native** - Framework mobile multiplataforma
+- **Expo (CLI & Go)** - Plataforma de desenvolvimento e testes
+- **JavaScript / JSX** - Linguagem do projeto
+- **React Hooks (useState, useEffect, useContext)** - Gerenciamento de estado e efeitos
+- **Context API** - Estado global (Auth, Theme, Transaction)
+- **AsyncStorage** - Armazenamento local persistente
 - **React Native SVG** - Gráficos e ícones
 - **React Native Chart Kit** - Visualização de dados
 
 ## 📋 Pré-requisitos
 
-- Node.js (v14 ou superior)
-- npm ou yarn
-- Expo CLI
-- Expo Go (app no celular) ou emulador
+Antes de rodar o app, certifique-se de ter instalado:
+
+- **Node.js** (v14 ou superior) – necessário para rodar o ambiente React Native  
+- **npm** ou **yarn** – gerenciador de pacotes  
+- **Expo CLI** – ferramenta para criar, desenvolver e testar apps React Native  
+- **Expo Go** (app no celular) ou emulador Android/iOS – para executar o app em dispositivos físicos ou simulados
 
 ## 🔧 Instalação
 
-1. Clone o repositório:
+1. **Clone o repositório:**
 ```bash
 git clone https://github.com/Flavinha-Souza/FinanceApp.git
+cd FinanceApp
 ```
 
 2. Instale as dependências:
 ```bash
 npm install
+
+# ou, se usar yarn:
+# yarn
 ```
 
 3. Inicie o projeto:
 ```bash
 npm start
+# ou, se usar yarn:
+# yarn start
 ```
 
-4. Escaneie o QR code com o Expo Go ou pressione:
+4. Escaneie o QR code com o Expo Go no seu celular ou pressione no terminal:
    - `a` para Android
    - `i` para iOS
    - `w` para Web
@@ -64,17 +87,17 @@ npm start
 ## 📁 Estrutura do Projeto
 
 ```
-MeuApp/
+FinanceApp/
 ├── src/
-│   ├── components/      # Componentes reutilizáveis
-│   ├── context/         # Context API (Auth, Theme, Transaction)
-│   ├── screens/         # Telas do app
-│   ├── services/        # Lógica de negócio
-│   └── utils/           # Utilitários e helpers
-├── assets/              # Imagens e ícones
-├── App.js              # Componente raiz
-└── package.json        # Dependências
-```
+│ ├── components/ # Componentes reutilizáveis (botões, cards, inputs, etc.)
+│ ├── context/ # Context API para estado global (Auth, Theme, Transaction)
+│ ├── screens/ # Telas do app (Login, Registro, Dashboard, etc.)
+│ ├── services/ # Lógica de negócio e manipulação de dados
+│ └── utils/ # Funções auxiliares e utilitários (criptografia, limpeza de dados)
+├── assets/ # Imagens, ícones e arquivos de mídia
+├── App.js # Componente raiz do React Native
+├── app.json # Configurações do Expo
+└── package.json # Dependências e scripts do projeto
 
 ## 🔒 Segurança
 
@@ -98,25 +121,30 @@ npm run web        # Abre no navegador
 
 Contribuições são bem-vindas! Sinta-se à vontade para:
 
-1. Fazer fork do projeto
-2. Criar uma branch (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Abrir um Pull Request
+1. Fazer **fork** do projeto  
+2. Criar uma **branch** (`git checkout -b feature/nova-funcionalidade`)  
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)  
+4. Fazer **push** da branch (`git push origin feature/nova-funcionalidade`)  
+5. Abrir um **Pull Request**  
+
+---
 
 ## 📦 Build do aplicativo
 
-- APK gerado para testes
-- Aplicação rodando fora do ambiente de desenvolvimento
-- Simulação de ciclo real de app mobile
+- APK gerado para testes e demonstração  
+- App rodando fora do ambiente de desenvolvimento  
+- Simulação de ciclo real de app mobile  
+
+---
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.  
+
+---
 
 ## 👨‍💻 Autor
 
-Desenvolvido por [Flávia Souza] - Desenvolvedora Web e Mobile Júnior
+Desenvolvido por **Flávia Souza** – Desenvolvedora Web e Mobile Júnior  
 
-
-⭐ Se este projeto te ajudou, considere dar uma estrela!
+⭐ Se este projeto te ajudou, considere dar uma **estrela** no GitHub!
