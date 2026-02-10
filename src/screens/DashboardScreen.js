@@ -7,7 +7,7 @@ import { useTheme } from "../context/ThemeContext";
 export default function DashboardScreen() {
   const { transacoes, resumo, categorias, loading } = useTransactions();
   const { theme } = useTheme();
-  const [filtro, setFiltro] = React.useState('mes'); // 'hoje', 'semana', 'mes', 'ano', 'tudo'
+  const [filtro, setFiltro] = React.useState('mes');
   const fadeAnim = useRef(new Animated.Value(0)).current;
   
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function DashboardScreen() {
       contentContainerStyle={styles.container} 
       showsVerticalScrollIndicator={false}
     >
-      {/* Filtros */}
+      
       <Animated.View style={{ opacity: fadeAnim }}>
         <View style={styles.filtrosContainer}>
           {['hoje', 'semana', 'mes', 'ano', 'tudo'].map((f, index) => (

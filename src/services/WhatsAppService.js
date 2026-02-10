@@ -12,11 +12,11 @@ export class WhatsAppService {
       return "📊 *Relatório de Vendas*\n\n❌ Nenhuma venda registrada hoje";
     }
     
-    // Calcular totais
+    
     const faturamento = vendasHoje.reduce((sum, t) => sum + t.valor, 0);
     const totalItens = vendasHoje.length;
     
-    // Agrupar por produto
+   
     const produtosPorCategoria = {};
     vendasHoje.forEach(venda => {
       if (!produtosPorCategoria[venda.categoria]) {
@@ -25,7 +25,7 @@ export class WhatsAppService {
       produtosPorCategoria[venda.categoria]++;
     });
     
-    // Montar relatório
+    
     let relatorio = `📊 *Relatório de Vendas - ${new Date().toLocaleDateString('pt-BR')}*\n\n`;
     relatorio += `💰 *Faturamento:* R$ ${faturamento.toFixed(2)}\n`;
     relatorio += `📦 *Total de vendas:* ${totalItens}\n`;

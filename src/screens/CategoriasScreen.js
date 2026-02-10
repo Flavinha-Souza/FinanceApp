@@ -1,4 +1,4 @@
-// CategoriasScreen.js
+
 import React, { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Pressable, Animated, Dimensions } from "react-native";
 import { ProgressChart } from 'react-native-chart-kit';

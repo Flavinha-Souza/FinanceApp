@@ -21,7 +21,7 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
   const [tipo, setTipo] = useState("despesa");
   const hoje = new Date();
   const dataInicial = `${String(hoje.getDate()).padStart(2, '0')}/${String(hoje.getMonth() + 1).padStart(2, '0')}/${hoje.getFullYear()}`;
-  const [data, setData] = useState(dataInicial); // DD/MM/AAAA
+  const [data, setData] = useState(dataInicial); 
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
   
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
       return;
     }
 
-    // Converter DD/MM/AAAA para AAAA-MM-DD (sem conversão de timezone)
+    
     const [dia, mes, ano] = data.split('/');
     const dataISO = `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
 
@@ -66,7 +66,7 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
 
     onAdd(novaTransacao);
     
-    // Limpar campos
+  
     setNome("");
     setValor("");
     setCategoria("");

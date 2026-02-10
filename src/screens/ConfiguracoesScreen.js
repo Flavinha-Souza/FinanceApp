@@ -35,6 +35,7 @@ export default function ConfiguracoesScreen() {
       Alert.alert('Erro', 'Senha atual incorreta');
     }
   };
+  
 
   const handleExportData = async () => {
     if (!transacoes || transacoes.length === 0) {

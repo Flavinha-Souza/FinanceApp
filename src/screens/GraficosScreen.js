@@ -20,7 +20,7 @@ export default function GraficosScreen() {
     }).start();
   }, []);
 
-  // Dados para gráfico de pizza (categorias)
+ 
   const dadosPizza = categorias
     .filter(cat => cat.total > 0)
     .map((cat, index) => ({
@@ -31,7 +31,7 @@ export default function GraficosScreen() {
       legendFontSize: 12,
     }));
 
-  // Dados para gráfico de linha (últimos 6 meses)
+
   const getDadosLinha = () => {
     const hoje = new Date();
     const labels = [];
@@ -77,7 +77,7 @@ export default function GraficosScreen() {
     }
   };
 
-  // Estatísticas gerais
+
   const totalEntradas = transacoes.filter(t => t.valor > 0).reduce((sum, t) => sum + t.valor, 0);
   const totalSaidas = Math.abs(transacoes.filter(t => t.valor < 0).reduce((sum, t) => sum + t.valor, 0));
   const saldoTotal = totalEntradas - totalSaidas;
@@ -93,7 +93,7 @@ export default function GraficosScreen() {
           <Text style={[styles.title, { color: theme.text, marginLeft: 8 }]}>Análise Financeira</Text>
         </View>
 
-      {/* Resumo */}
+   
       <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
         <Text style={[styles.cardTitle, { color: theme.text }]}>Resumo Geral</Text>
         <View style={styles.resumoRow}>
@@ -118,7 +118,7 @@ export default function GraficosScreen() {
         </View>
       </View>
 
-      {/* Gráfico de Linha */}
+    
       <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
         <View style={styles.cardHeader}>
           <Ionicons name="trending-up-outline" size={20} color={theme.primary} />
@@ -143,7 +143,7 @@ export default function GraficosScreen() {
         )}
       </View>
 
-      {/* Gráfico de Pizza */}
+      
       <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
         <View style={styles.cardHeader}>
           <Ionicons name="pie-chart-outline" size={20} color={theme.primary} />

@@ -17,7 +17,7 @@ export default function EditTransactionModal({ visible, onClose, onEdit, transac
   const [valor, setValor] = useState("");
   const [categoria, setCategoria] = useState("");
   const [tipo, setTipo] = useState("despesa");
-  const [data, setData] = useState(""); // DD/MM/AAAA
+  const [data, setData] = useState(""); 
 
   const categorias = [
     "Alimentação", "Transporte", "Lazer", "Saúde", 
@@ -31,7 +31,7 @@ export default function EditTransactionModal({ visible, onClose, onEdit, transac
       setCategoria(transacao.categoria);
       setTipo(transacao.valor > 0 ? "receita" : "despesa");
       
-      // Converter AAAA-MM-DD para DD/MM/AAAA
+      
       if (transacao.data) {
         const [ano, mes, dia] = transacao.data.split('-');
         setData(`${dia}/${mes}/${ano}`);
@@ -54,7 +54,7 @@ export default function EditTransactionModal({ visible, onClose, onEdit, transac
       return;
     }
 
-    // Converter DD/MM/AAAA para AAAA-MM-DD (sem conversão de timezone)
+    
     const [dia, mes, ano] = data.split('/');
     const dataISO = `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
 

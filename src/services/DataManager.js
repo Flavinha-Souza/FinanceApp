@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const STORAGE_KEY = '@MeuApp:transacoes';
 
 export const DataManager = {
-  // Carregar transações do AsyncStorage
+  
   async carregarTransacoes() {
     try {
       const dados = await AsyncStorage.getItem(STORAGE_KEY);
@@ -17,7 +17,7 @@ export const DataManager = {
     }
   },
 
-  // Salvar transações no AsyncStorage
+  
   async salvarTransacoes(transacoes) {
     try {
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(transacoes));
@@ -27,7 +27,7 @@ export const DataManager = {
     }
   },
 
-  // Adicionar nova transação
+  
   async adicionarTransacao(novaTransacao) {
     try {
       const transacoes = await this.carregarTransacoes();
@@ -39,7 +39,7 @@ export const DataManager = {
     }
   },
 
-  // Editar transação existente
+  
   async editarTransacao(transacaoEditada) {
     try {
       const transacoes = await this.carregarTransacoes();
@@ -53,7 +53,7 @@ export const DataManager = {
     }
   },
 
-  // Deletar transação
+ 
   async deletarTransacao(id) {
     try {
       const transacoes = await this.carregarTransacoes();
@@ -65,7 +65,9 @@ export const DataManager = {
     }
   },
 
-  // Calcular resumo financeiro
+
+
+   
   calcularResumo(transacoes) {
     const entradas = transacoes
       .filter(t => t.valor > 0)
@@ -76,7 +78,7 @@ export const DataManager = {
       .reduce((sum, t) => sum + t.valor, 0));
     
     const saldoTotal = entradas - gastos;
-    const previsto = saldoTotal; // Simplificado por enquanto
+    const previsto = saldoTotal; 
     
     return {
       entradas,
@@ -86,7 +88,7 @@ export const DataManager = {
     };
   },
 
-  // Calcular percentuais por categoria
+ 
   calcularCategorias(transacoes) {
     const gastos = transacoes.filter(t => t.valor < 0);
     const totalGastos = Math.abs(gastos.reduce((sum, t) => sum + t.valor, 0));
@@ -104,6 +106,7 @@ export const DataManager = {
     });
     
     return Object.entries(categoriaMap).map(([nome, valor], index) => ({
+      
       id: index + 1,
       nome,
       percentual: Math.round((valor / totalGastos) * 100)

@@ -15,7 +15,7 @@ export const TransactionProvider = ({ children }) => {
   const [transacoes, setTransacoes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Carregar dados ao iniciar o app
+
   useEffect(() => {
     carregarDados();
   }, []);
@@ -74,7 +74,7 @@ export const TransactionProvider = ({ children }) => {
     }
   };
 
-  // Calcular dados derivados
+
   const resumo = DataManager.calcularResumo(transacoes);
   const categorias = DataManager.calcularCategorias(transacoes);
 
