@@ -1,4 +1,4 @@
-# 💰 FinanceApp - Gestão Financeira Pessoal
+# FinanceApp - Gestão Financeira Pessoal
 
 Aplicativo mobile de gestão financeira desenvolvido com React Native e Expo. Permite controlar receitas, despesas e visualizar relatórios financeiros.
 
@@ -95,6 +95,12 @@ Contribuições são bem-vindas! Sinta-se à vontade para:
 4. Push para a branch (`git push origin feature/nova-funcionalidade`)
 5. Abrir um Pull Request
 
+## 📦 Build do aplicativo
+
+- APK gerado para testes
+- Aplicação rodando fora do ambiente de desenvolvimento
+- Simulação de ciclo real de app mobile
+
 ## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
@@ -103,6 +109,5 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 Desenvolvido por [Flávia Souza] - Desenvolvedora Web e Mobile Júnior
 
-## 📧 Contato
 
 ⭐ Se este projeto te ajudou, considere dar uma estrela!
