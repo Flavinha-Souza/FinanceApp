@@ -47,6 +47,15 @@ Aplicativo mobile de gestão financeira desenvolvido com React Native e Expo. Pe
 - **React Native SVG** - Gráficos e ícones
 - **React Native Chart Kit** - Visualização de dados
 
+## 🎨 Design e Usabilidade
+
+- O FinanceApp foi desenvolvido com foco em simplicidade e clareza, priorizando a experiência do usuário.
+- Cores neutras e minimalistas: facilitam a leitura e tornam a interface mais limpa.
+- Layout intuitivo: navegação clara entre telas (Dashboard, Transações, Gráficos e Configurações).
+- Funcionalidade em primeiro lugar: cada elemento do app tem propósito definido, evitando excesso de detalhes visuais.
+- Modo claro/escuro: permite personalização rápida da aparência, mantendo a consistência.
+
+
 ## 📋 Pré-requisitos
 
 Antes de rodar o app, certifique-se de ter instalado:
