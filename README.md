@@ -109,6 +109,5 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 Desenvolvido por [Flávia Souza] - Desenvolvedora Web e Mobile Júnior
 
-## 📧 Contato
 
 ⭐ Se este projeto te ajudou, considere dar uma estrela!
