@@ -13,6 +13,16 @@ Aplicativo mobile de gestão financeira desenvolvido com React Native e Expo. Pe
 - ✅ Alteração de senha
 - ✅ Dados armazenados localmente
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="./screenshots/Login.jpeg" width="200" />
+  <img src="./screenshots/Dashboard.jpeg" width="200" />
+  <img src="./screenshots/Transações.jpeg" width="200" />
+  <img src="./screenshots/Gráficos.jpeg" width="200" />
+  <img src="./screenshots/Configurações.jpeg" width="200" />
+</p>
+
 ## 🚀 Tecnologias
 
 - **React Native** - Framework mobile
