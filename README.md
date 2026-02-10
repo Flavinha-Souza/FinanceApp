@@ -44,7 +44,6 @@ Aplicativo mobile de gestão financeira desenvolvido com React Native e Expo. Pe
 1. Clone o repositório:
 ```bash
 git clone https://github.com/Flavinha-Souza/FinanceApp.git
-cd FinanceApp
 ```
 
 2. Instale as dependências:
