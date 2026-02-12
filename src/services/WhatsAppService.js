@@ -36,7 +36,7 @@ export class WhatsAppService {
       relatorio += `• ${produto}: ${quantidade}\n`;
     });
     
-    relatorio += `\n🤖 _Enviado automaticamente pelo MeuApp Vendas_`;
+    relatorio += `\n🤖 _Enviado automaticamente pelo FinanceApp_`;
     
     return relatorio;
   }
@@ -100,7 +100,7 @@ export class WhatsAppService {
       
       const backupString = JSON.stringify(backup, null, 2);
       const mensagem = encodeURIComponent(
-        `🔄 *Backup Completo - MeuApp Vendas*\n\n` +
+        `🔄 *Backup Completo - FinanceApp*\n\n` +
         `📅 Data: ${new Date().toLocaleDateString('pt-BR')}\n` +
         `📊 Total de registros: ${transacoes.length}\n\n` +
         `💾 *Dados (copie e salve):*\n\`\`\`${backupString}\`\`\``

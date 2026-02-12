@@ -51,3 +51,6 @@ yarn-error.*
 # Configurações pessoais
 .vscode/
 .idea/
+
+# Arquivos antigos
+old_files/
