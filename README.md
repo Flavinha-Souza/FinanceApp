@@ -1,9 +1,9 @@
 # FinanceApp - Gestão Financeira Pessoal
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
-![Platform](https://img.shields.io/badge/platform-React%20Native-61DAFB.svg)
-![Expo](https://img.shields.io/badge/Expo-~54.0-000020.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg) &nbsp;&nbsp;
+![Version](https://img.shields.io/badge/version-1.0.0-green.svg) &nbsp;&nbsp;
+![Platform](https://img.shields.io/badge/platform-React%20Native-61DAFB.svg) &nbsp;&nbsp;
+![Expo](https://img.shields.io/badge/Expo-~54.0-000020.svg) &nbsp;&nbsp;
 ![Status](https://img.shields.io/badge/status-active-success.svg)
 
 Aplicativo mobile de gestão financeira desenvolvido com React Native e Expo. Permite o controle manual de receitas e despesas, além da visualização de relatórios financeiros.
