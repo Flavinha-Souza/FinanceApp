@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const STORAGE_KEY = '@MeuApp:transacoes';
+const STORAGE_KEY = '@FinanceApp:transacoes';
 
 export const DataManager = {
   

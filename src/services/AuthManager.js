@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { hashPassword, encrypt, decrypt } from '../utils/crypto';
 
-const USERS_KEY = '@MeuApp:users';
-const CURRENT_USER_KEY = '@MeuApp:currentUser';
+const USERS_KEY = '@FinanceApp:users';
+const CURRENT_USER_KEY = '@FinanceApp:currentUser';
 
 export async function register(username, senha) {
   try {

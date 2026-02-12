@@ -147,13 +147,7 @@ npm run web        # Abre no navegador
 
 ## 🤝 Contribuindo
 
-Contribuições são bem-vindas! Sinta-se à vontade para:
-
-1. Fazer **fork** do projeto  
-2. Criar uma **branch** (`git checkout -b feature/nova-funcionalidade`)  
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)  
-4. Fazer **push** da branch (`git push origin feature/nova-funcionalidade`)  
-5. Abrir um **Pull Request**  
+Contribuições são bem-vindas! Veja o guia completo em [CONTRIBUTING.md](CONTRIBUTING.md)  
 
 ---
 
