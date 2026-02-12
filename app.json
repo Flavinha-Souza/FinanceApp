@@ -4,11 +4,10 @@
     "slug": "financeapp",
     "version": "2.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon.jpeg",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash-icon.jpeg",
       "resizeMode": "center",
       "backgroundColor": "#FFFFFF"
     },
@@ -18,12 +17,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#007AFF"
+        "foregroundImage": "./assets/adaptive-icon.jpeg",
+        "backgroundColor": "#FFFFFF"
       },
       "package": "com.flaviasouza.financeapp",
-      "versionCode": 2,
-      "edgeToEdgeEnabled": true,
       "permissions": [
         "android.permission.RECEIVE_BOOT_COMPLETED",
         "android.permission.VIBRATE"
