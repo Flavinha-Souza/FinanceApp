@@ -167,6 +167,6 @@ Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) par
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **Flávia Souza** – Desenvolvedora Web e Mobile Júnior  
+Desenvolvido por **Flávia Souza** – Desenvolvedora Front-end Web e Mobile Júnior  
 
 ⭐ Se este projeto te ajudou, considere dar uma **estrela** no GitHub!
