@@ -165,7 +165,7 @@ Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) par
 
 ---
 
-## 👨‍💻 Autor
+## 👨‍💻 Autora
 
 Desenvolvido por **Flávia Souza** – Desenvolvedora Front-end Web e Mobile Júnior  
 
