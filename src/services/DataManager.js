@@ -1,16 +1,50 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const STORAGE_KEY = '@FinanceApp:transacoes';
+const STORAGE_KEY_PREFIX = '@FinanceApp:transacoes';
+const LEGACY_STORAGE_KEY = '@FinanceApp:transacoes';
+
+function getStorageKey(userId) {
+  return `${STORAGE_KEY_PREFIX}:${userId}`;
+}
 
 export const DataManager = {
-  
-  async carregarTransacoes() {
+  async migrarTransacoesLegadas(userId) {
+    if (!userId) return [];
+
     try {
-      const dados = await AsyncStorage.getItem(STORAGE_KEY);
+      const userKey = getStorageKey(userId);
+      const userData = await AsyncStorage.getItem(userKey);
+      if (userData) {
+        return JSON.parse(userData);
+      }
+
+      const legacyData = await AsyncStorage.getItem(LEGACY_STORAGE_KEY);
+      if (!legacyData) {
+        return [];
+      }
+
+      const parsedLegacy = JSON.parse(legacyData);
+      if (!Array.isArray(parsedLegacy)) {
+        return [];
+      }
+
+      await AsyncStorage.setItem(userKey, JSON.stringify(parsedLegacy));
+      return parsedLegacy;
+    } catch (error) {
+      return [];
+    }
+  },
+
+  
+  async carregarTransacoes(userId) {
+    if (!userId) return [];
+
+    try {
+      const dados = await AsyncStorage.getItem(getStorageKey(userId));
       if (dados) {
         return JSON.parse(dados);
       } else {
-        return [];
+        return await this.migrarTransacoesLegadas(userId);
       }
     } catch (error) {
       return [];
@@ -18,9 +52,11 @@ export const DataManager = {
   },
 
   
-  async salvarTransacoes(transacoes) {
+  async salvarTransacoes(userId, transacoes) {
+    if (!userId) return false;
+
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(transacoes));
+      await AsyncStorage.setItem(getStorageKey(userId), JSON.stringify(transacoes));
       return true;
     } catch (error) {
       return false;
@@ -28,11 +64,11 @@ export const DataManager = {
   },
 
   
-  async adicionarTransacao(novaTransacao) {
+  async adicionarTransacao(userId, novaTransacao) {
     try {
-      const transacoes = await this.carregarTransacoes();
+      const transacoes = await this.carregarTransacoes(userId);
       const transacoesAtualizadas = [...transacoes, novaTransacao];
-      await this.salvarTransacoes(transacoesAtualizadas);
+      await this.salvarTransacoes(userId, transacoesAtualizadas);
       return transacoesAtualizadas;
     } catch (error) {
       return null;
@@ -40,13 +76,13 @@ export const DataManager = {
   },
 
   
-  async editarTransacao(transacaoEditada) {
+  async editarTransacao(userId, transacaoEditada) {
     try {
-      const transacoes = await this.carregarTransacoes();
+      const transacoes = await this.carregarTransacoes(userId);
       const transacoesAtualizadas = transacoes.map(t => 
         t.id === transacaoEditada.id ? transacaoEditada : t
       );
-      await this.salvarTransacoes(transacoesAtualizadas);
+      await this.salvarTransacoes(userId, transacoesAtualizadas);
       return transacoesAtualizadas;
     } catch (error) {
       return null;
@@ -54,11 +90,11 @@ export const DataManager = {
   },
 
  
-  async deletarTransacao(id) {
+  async deletarTransacao(userId, id) {
     try {
-      const transacoes = await this.carregarTransacoes();
+      const transacoes = await this.carregarTransacoes(userId);
       const transacoesAtualizadas = transacoes.filter(t => t.id !== id);
-      await this.salvarTransacoes(transacoesAtualizadas);
+      await this.salvarTransacoes(userId, transacoesAtualizadas);
       return transacoesAtualizadas;
     } catch (error) {
       return null;

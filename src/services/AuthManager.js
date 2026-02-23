@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { hashPassword, encrypt, decrypt } from '../utils/crypto';
+import { hashPassword } from '../utils/crypto';
 
 const USERS_KEY = '@FinanceApp:users';
 const CURRENT_USER_KEY = '@FinanceApp:currentUser';
@@ -11,13 +11,7 @@ export async function register(username, senha) {
 
     const existingUser = users.find(u => u.username === username);
     if (existingUser) {
-     
-      const userIndex = users.findIndex(u => u.username === username);
-      const senhaHash = hashPassword(senha);
-      users[userIndex] = { id: existingUser.id, username, senha: senhaHash };
-      await AsyncStorage.setItem(USERS_KEY, JSON.stringify(users));
-      await AsyncStorage.setItem(CURRENT_USER_KEY, JSON.stringify({ id: existingUser.id, username }));
-      return { id: existingUser.id, username };
+      return null;
     }
 
     const senhaHash = hashPassword(senha);
@@ -88,7 +82,10 @@ export async function changePassword(userId, senhaAtual, novaSenha) {
     const users = usersData ? JSON.parse(usersData) : [];
 
     const senhaAtualHash = hashPassword(senhaAtual);
-    const userIndex = users.findIndex(u => u.id === userId && u.senha === senhaAtualHash);
+    let userIndex = users.findIndex(u => u.id === userId && u.senha === senhaAtualHash);
+    if (userIndex === -1) {
+      userIndex = users.findIndex(u => u.id === userId && u.senha === senhaAtual);
+    }
     if (userIndex === -1) {
       return false;
     }

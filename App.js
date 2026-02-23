@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { SafeAreaView, StatusBar, ActivityIndicator, View, Alert } from "react-native";
+import { SafeAreaView, StatusBar, Alert } from "react-native";
 import * as SplashScreen from 'expo-splash-screen';
 import { AuthProvider, AuthContext } from "./src/context/AuthContext";
 import { TransactionProvider } from "./src/context/TransactionContext";
@@ -30,8 +30,12 @@ function AppContent() {
       return (
         <RegisterScreen
           onRegister={async (username, senha) => {
-            await fazerCadastro(username, senha);
-            Alert.alert('Sucesso', 'Conta criada com sucesso!');
+            const sucesso = await fazerCadastro(username, senha);
+            if (sucesso) {
+              Alert.alert('Sucesso', 'Conta criada com sucesso!');
+              return;
+            }
+            Alert.alert('Erro', 'Este usuário já existe');
           }}
           onNavigateToLogin={() => setTela('login')}
         />
@@ -70,4 +74,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-

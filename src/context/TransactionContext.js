@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { DataManager } from '../services/DataManager';
+import { AuthContext } from './AuthContext';
 
 const TransactionContext = createContext();
 
@@ -12,18 +13,19 @@ export const useTransactions = () => {
 };
 
 export const TransactionProvider = ({ children }) => {
+  const { usuario } = useContext(AuthContext);
   const [transacoes, setTransacoes] = useState([]);
   const [loading, setLoading] = useState(true);
 
 
   useEffect(() => {
     carregarDados();
-  }, []);
+  }, [usuario?.id]);
 
   const carregarDados = async () => {
     setLoading(true);
     try {
-      const dados = await DataManager.carregarTransacoes();
+      const dados = await DataManager.carregarTransacoes(usuario?.id);
       setTransacoes(dados);
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
@@ -34,7 +36,7 @@ export const TransactionProvider = ({ children }) => {
 
   const adicionarTransacao = async (novaTransacao) => {
     try {
-      const transacoesAtualizadas = await DataManager.adicionarTransacao(novaTransacao);
+      const transacoesAtualizadas = await DataManager.adicionarTransacao(usuario?.id, novaTransacao);
       if (transacoesAtualizadas) {
         setTransacoes(transacoesAtualizadas);
         return true;
@@ -48,7 +50,7 @@ export const TransactionProvider = ({ children }) => {
 
   const editarTransacao = async (transacaoEditada) => {
     try {
-      const transacoesAtualizadas = await DataManager.editarTransacao(transacaoEditada);
+      const transacoesAtualizadas = await DataManager.editarTransacao(usuario?.id, transacaoEditada);
       if (transacoesAtualizadas) {
         setTransacoes(transacoesAtualizadas);
         return true;
@@ -62,7 +64,7 @@ export const TransactionProvider = ({ children }) => {
 
   const deletarTransacao = async (id) => {
     try {
-      const transacoesAtualizadas = await DataManager.deletarTransacao(id);
+      const transacoesAtualizadas = await DataManager.deletarTransacao(usuario?.id, id);
       if (transacoesAtualizadas) {
         setTransacoes(transacoesAtualizadas);
         return true;

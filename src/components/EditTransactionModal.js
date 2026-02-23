@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../context/ThemeContext";
+import { toIsoDateFromBrazilian } from "../utils/date";
 
 export default function EditTransactionModal({ visible, onClose, onEdit, transacao }) {
   const { theme } = useTheme();
@@ -55,8 +56,11 @@ export default function EditTransactionModal({ visible, onClose, onEdit, transac
     }
 
     
-    const [dia, mes, ano] = data.split('/');
-    const dataISO = `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+    const dataISO = toIsoDateFromBrazilian(data);
+    if (!dataISO) {
+      Alert.alert("Erro", "Data inválida. Use o formato DD/MM/AAAA");
+      return;
+    }
 
     const transacaoEditada = {
       ...transacao,

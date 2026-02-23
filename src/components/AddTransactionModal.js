@@ -12,6 +12,7 @@ import {
 import * as Haptics from 'expo-haptics';
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../context/ThemeContext";
+import { toIsoDateFromBrazilian } from "../utils/date";
 
 export default function AddTransactionModal({ visible, onClose, onAdd }) {
   const { theme } = useTheme();
@@ -53,8 +54,11 @@ export default function AddTransactionModal({ visible, onClose, onAdd }) {
     }
 
     
-    const [dia, mes, ano] = data.split('/');
-    const dataISO = `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+    const dataISO = toIsoDateFromBrazilian(data);
+    if (!dataISO) {
+      Alert.alert("Erro", "Data inválida. Use o formato DD/MM/AAAA");
+      return;
+    }
 
     const novaTransacao = {
       id: Date.now(),
