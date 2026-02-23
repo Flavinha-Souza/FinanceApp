@@ -159,6 +159,14 @@ Contribuições são bem-vindas! Veja o guia completo em [CONTRIBUTING.md](CONTR
 
 ---
 
+### 📲 Download
+
+📦 Latest Release:
+https://github.com/Flavinha-Souza/FinanceApp/releases
+
+⬇️ Direct APK (v1.0.1):
+https://github.com/Flavinha-Souza/FinanceApp/releases/download/v1.0.1/FinanceApp-Android-v1.0.1.apk
+
 ## 📄 Licença
 
 Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.  
